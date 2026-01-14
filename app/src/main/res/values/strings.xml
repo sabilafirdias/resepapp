@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">resepappy</string>
+
+    <string name="login_title">Masuk</string>
+    <string name="register_title">Daftar</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Kata Sandi</string>
+    <string name="username_hint">Nama Pengguna</string>
+    <string name="btn_login">Masuk</string>
+    <string name="btn_register">Daftar</string>
+    <string name="link_to_register">Belum punya akun? Daftar</string>
+    <string name="link_to_login">Sudah punya akun? Masuk</string>
+
+    <string name="home_title">Resep</string>
+    <string name="search_hint">Cari resep atau bahan…</string>
+    <string name="btn_add_resep">Tambah Resep</string>
+    <string name="profile_title">Profil Pengguna</string>
+    <string name="bookmark_title">Bookmark Saya</string>
+    <string name="back">Kembali</string>
+
+    <string name="resep_bahan">Bahan</string>
+    <string name="kategori_makanan_berat">Makanan Berat</string>
+    <string name="kategori_cemilan">Cemilan</string>
+    <string name="kategori_minuman">Minuman</string>
+    <string name="buat_resep_baru">Buat Resep Baru</string>
+    <string name="simpan_resep">Simpan Resep</string>
+    <string name="judul_resep">Judul Resep</string>
+    <string name="langkah_pembuatan">Langkah Pembuatan</string>
+    <string name="catatan_opsional">Catatan (Opsional)</string>
+    <string name="kategori">Kategori</string>
+    <string name="field_wajib">* Field wajib diisi</string>
+
+    <string name="error_email_salah">Email atau kata sandi salah</string>
+    <string name="error_field_kosong">Harap isi semua field</string>
+    <string name="error_email_terdaftar">Email sudah terdaftar</string>
+    <string name="error_tidak_ada_hasil">Tidak ditemukan resep dengan kata kunci itu</string>
+
+</resources>
