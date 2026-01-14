@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -158,7 +157,6 @@ fun DetailContent(
                     onClick = onCommentClick,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Icon(Icons.Default.Email, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
                     Text("Komentar")
                 }
@@ -169,7 +167,6 @@ fun DetailContent(
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA000)),
                         modifier = Modifier.weight(1f)
                     ) {
-                        Icon(Icons.Default.Edit, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
                         Text("Edit")
                     }

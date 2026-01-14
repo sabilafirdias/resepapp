@@ -6,10 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
@@ -17,24 +15,19 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.resepappy.modeldata.Resep
-import com.example.resepappy.uicontroller.route.DestinasiBuatResep
 import com.example.resepappy.uicontroller.route.DestinasiCari
-import com.example.resepappy.uicontroller.route.DestinasiProfil
 import com.example.resepappy.viewmodel.HomeViewModel
 import com.example.resepappy.viewmodel.StatusUiHome
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
 import com.example.resepappy.uicontroller.route.DestinasiHome
 import com.example.resepappy.uicontroller.route.DestinasiLogin
-import com.example.resepappy.uicontroller.route.DestinasiRegister
 import com.example.resepappy.viewmodel.SessionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

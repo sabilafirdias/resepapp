@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -23,21 +24,42 @@ import com.example.resepappy.viewmodel.provider.PenyediaViewModel
 @Composable
 fun HalamanCari(
     navController: NavController,
+    onNavigateBack: () -> Unit,
     viewModel: CariResepViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         topBar = {
-            TopAppBar(title = {
-                OutlinedTextField(
-                    value = viewModel.searchQuery,
-                    onValueChange = { viewModel.onQueryChange(it) },
-                    placeholder = { Text("Cari judul atau bahan (misal: telur)") },
-                    modifier = Modifier.fillMaxWidth().padding(end = 16.dp),
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.medium
-                )
-            })
+            TopAppBar(
+                title = {
+                    // Masukkan TextField di dalam judul agar seragam secara posisi
+                    TextField(
+                        value = viewModel.searchQuery,
+                        onValueChange = { viewModel.onQueryChange(it) },
+                        placeholder = { Text("Cari resep...") },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                        singleLine = true
+                    )
+                },
+                // Tambahkan tombol kembali (NavigateUp)
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Kembali"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {

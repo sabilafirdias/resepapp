@@ -16,6 +16,7 @@ import com.example.resepappy.uicontroller.route.DestinasiRegister
 import com.example.resepappy.uicontroller.route.DestinasiWelcome
 import com.example.resepappy.uicontroller.route.*
 import com.example.resepappy.view.HalamanBuatResep
+import com.example.resepappy.view.HalamanCari
 import com.example.resepappy.view.HalamanDetailResep
 import com.example.resepappy.view.HalamanEditResep
 import com.example.resepappy.view.HalamanHome
@@ -87,6 +88,13 @@ fun HostNavigasi(
             )
         }
 
+        composable(DestinasiCari.route) {
+            HalamanCari(
+                navController = navController,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
+
         composable(
             route = DestinasiProfil.route,
             arguments = listOf(navArgument("idUser") { type = NavType.IntType })
@@ -125,10 +133,12 @@ fun HostNavigasi(
 
         composable(
             route = DestinasiDetailResep.route,
-            arguments = listOf(navArgument("idResep") { type = NavType.IntType })
+            arguments = listOf(
+                navArgument("idResep") { type = NavType.IntType }            )
         ) { backStackEntry ->
             val idResep = backStackEntry.arguments?.getInt("idResep") ?: 0
             val idUserLogin = sessionViewModel.currentUserId ?: 0
+
             HalamanDetailResep(
                 idResep = idResep,
                 idUserLogin = idUserLogin,
