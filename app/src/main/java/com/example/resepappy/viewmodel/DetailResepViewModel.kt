@@ -1,22 +1,12 @@
 package com.example.resepappy.viewmodel
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.resepappy.modeldata.Resep
+import com.example.resepappy.modeldata.toResep
 import com.example.resepappy.repositori.ResepRepository
 import kotlinx.coroutines.launch
 
@@ -38,14 +28,17 @@ class DetailResepViewModel(private val repository: ResepRepository) : ViewModel(
         viewModelScope.launch {
             uiState = DetailUiState.Loading
             try {
-                val response = repository.getResepByUserId(idResep) // Pastikan fungsi ini ada di repository
+                val response = repository.getResepDetail(idResep)
                 if (response.isSuccessful) {
-                    val resep = response.body()
+                    val resep = response.body()?.toResep()
                     if (resep != null) {
                         uiState = DetailUiState.Success(resep)
-                        // Ambil jumlah bookmark jika ada endpointnya
                         fetchJumlahBookmark(idResep)
+                    } else {
+                        uiState = DetailUiState.Error("Resep tidak ditemukan")
                     }
+                } else {
+                    uiState = DetailUiState.Error("Gagal mengambil data: ${response.message()}")
                 }
             } catch (e: Exception) {
                 uiState = DetailUiState.Error(e.message ?: "Terjadi kesalahan")
@@ -56,15 +49,22 @@ class DetailResepViewModel(private val repository: ResepRepository) : ViewModel(
     private fun fetchJumlahBookmark(idResep: Int) {
         viewModelScope.launch {
             try {
-                val response = repository.getBookmarks(idResep)
-                if (response.isSuccessful) jumlahBookmark = response.body() ?: 0
-            } catch (e: Exception) { }
+                // Menggunakan getCountBookmarks yang mengembalikan Response<Int>
+                val response = repository.getCountBookmarks(idResep)
+                if (response.isSuccessful) {
+                    jumlahBookmark = response.body() ?: 0
+                }
+            } catch (e: Exception) {
+                // Opsional: Log error jika gagal ambil jumlah bookmark
+            }
         }
     }
 
     suspend fun hapusResep(idResep: Int): Boolean {
         return try {
             repository.hapusResep(idResep).isSuccessful
-        } catch (e: Exception) { false }
+        } catch (e: Exception) {
+            false
+        }
     }
 }

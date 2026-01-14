@@ -87,6 +87,7 @@ fun HalamanDetailResep(
                     resep = state.resep,
                     idUserLogin = idUserLogin,
                     jumlahBookmark = viewModel.jumlahBookmark,
+                    onEditClick = { onEditClick(idResep) },
                     onDelete = {
                         viewModel.viewModelScope.launch {
                             if (viewModel.hapusResep(idResep)) {
@@ -107,6 +108,7 @@ fun DetailContent(
     resep: Resep,
     idUserLogin: Int,
     jumlahBookmark: Int,
+    onEditClick: () -> Unit,
     onDelete: () -> Unit,
     onCommentClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -163,9 +165,22 @@ fun DetailContent(
 
                 if (resep.id_user == idUserLogin) {
                     Button(
+                        onClick = onEditClick,
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA000)),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Icon(Icons.Default.Edit, contentDescription = null)
+                        Spacer(Modifier.width(8.dp))
+                        Text("Edit")
+                    }
+                }
+            }
+
+                if (resep.id_user == idUserLogin) {
+                    Button(
                         onClick = onDelete,
                         colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text("Hapus Resep", color = Color.White)
                     }
@@ -173,7 +188,6 @@ fun DetailContent(
             }
         }
     }
-}
 
 @Composable
 fun ErrorScreen(message: String, onRetry: () -> Unit) {

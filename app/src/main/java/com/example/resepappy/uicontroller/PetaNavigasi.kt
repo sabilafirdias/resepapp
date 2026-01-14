@@ -16,6 +16,8 @@ import com.example.resepappy.uicontroller.route.DestinasiRegister
 import com.example.resepappy.uicontroller.route.DestinasiWelcome
 import com.example.resepappy.uicontroller.route.*
 import com.example.resepappy.view.HalamanBuatResep
+import com.example.resepappy.view.HalamanDetailResep
+import com.example.resepappy.view.HalamanEditResep
 import com.example.resepappy.view.HalamanHome
 import com.example.resepappy.view.HalamanLogin
 import com.example.resepappy.view.HalamanProfil
@@ -121,9 +123,34 @@ fun HostNavigasi(
             )
         }
 
-        // Opsional: Tambahkan route lain
-        composable(DestinasiCari.route) {
-            // Halaman pencarian
+        composable(
+            route = DestinasiDetailResep.route,
+            arguments = listOf(navArgument("idResep") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idResep = backStackEntry.arguments?.getInt("idResep") ?: 0
+            val idUserLogin = sessionViewModel.currentUserId ?: 0
+            HalamanDetailResep(
+                idResep = idResep,
+                idUserLogin = idUserLogin,
+                navController = navController,
+                onEditClick = { id ->
+                    navController.navigate("edit_resep/$id")
+                }
+            )
+        }
+
+        composable(
+            route = DestinasiEditResep.route,
+            arguments = listOf(navArgument("idResep") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idResep = backStackEntry.arguments?.getInt("idResep") ?: 0
+            val idUser = sessionViewModel.currentUserId ?: 0
+
+            HalamanEditResep(
+                idResep = idResep,
+                idUser = idUser,
+                navController = navController
+            )
         }
     }
 }

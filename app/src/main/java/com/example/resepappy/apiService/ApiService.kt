@@ -41,7 +41,7 @@ interface ApiService {
     suspend fun getAllResep(): Response<List<ResepResponse>>
 
     @GET("resep/get_resep.php")
-    suspend fun getResep(@Query("id_resep") id: Int): Response<Resep>
+    suspend fun getResepDetail(@Query("id_resep") id: Int): Response<ResepResponse>
 
     // ApiService.kt
     @GET("resep/get_resep_by_user.php")
@@ -57,7 +57,7 @@ interface ApiService {
     suspend fun deleteResep(@Query("id_resep") id: Int): Response<OperationResponse>
 
     @GET("resep/search_resep.php")
-    suspend fun searchResep(@Query("keyword") keyword: String): Response<List<Resep>>
+    suspend fun searchResep(@Query("q") query: String): Response<List<ResepResponse>>
 
 
 
@@ -80,4 +80,7 @@ interface ApiService {
 
     @GET("bookmark/get_bookmark.php")
     suspend fun getBookmarks(@Query("id_user") idUser: Int): Response<List<ResepResponse>>
+
+    @GET("bookmark/get_jumlah_bookmark.php")
+    suspend fun getCountBookmarks(@Query("id_resep") id: Int): Response<Int>
 }

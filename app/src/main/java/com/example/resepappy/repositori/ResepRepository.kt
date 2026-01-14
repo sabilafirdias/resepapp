@@ -18,9 +18,9 @@ interface ResepRepository {
     suspend fun deleteAkun(idUser: Int): Response<OperationResponse>
 
     suspend fun getAllResep(): Response<List<ResepResponse>>
-//    suspend fun getResep(id: Int): Response<Resep>
+    suspend fun getResepDetail(id: Int): Response<ResepResponse>
     suspend fun getResepByUserId(idUser: Int): Response<List<Resep>>
-    suspend fun searchResep(keyword: String): Response<List<Resep>>
+    suspend fun searchResep(keyword: String): Response<List<ResepResponse>>
     suspend fun tambahResep(request: ResepRequest.CreateResepRequest): Response<OperationResponse>
     suspend fun updateResep(id: Int, request: ResepRequest.UpdateResepRequest): Response<OperationResponse>
     suspend fun hapusResep(id: Int): Response<OperationResponse>
@@ -30,6 +30,7 @@ interface ResepRepository {
 
     suspend fun toggleBookmark(idUser: Int, idResep: Int): Response<OperationResponse>
     suspend fun getBookmarks(idUser: Int): Response<List<ResepResponse>>
+    suspend fun getCountBookmarks(id: Int): Response<Int>
 
     suspend fun addKomentar(komentar: Komentar): Response<OperationResponse>
     suspend fun getKomentar(idResep: Int): Response<List<Komentar>>
@@ -65,11 +66,11 @@ class JaringanResepRepository(
     override suspend fun getResepByUserId(idUser: Int): Response<List<Resep>> =
         apiService.getResepByUser(idUser)
 
-//    override suspend fun getResep(id: Int): Response<Resep> =
-//        apiService.getResep(id)
+    override suspend fun getResepDetail(id: Int): Response<ResepResponse> =
+        apiService.getResepDetail(id)
 
-    override suspend fun searchResep(keyword: String): Response<List<Resep>> =
-        apiService.searchResep(keyword)
+    override suspend fun searchResep(query: String): Response<List<ResepResponse>> =
+        apiService.searchResep(query)
 
     override suspend fun tambahResep(request: ResepRequest.CreateResepRequest): Response<OperationResponse> =
         apiService.createResep(request)
@@ -80,17 +81,15 @@ class JaringanResepRepository(
     override suspend fun hapusResep(id: Int): Response<OperationResponse> =
         apiService.deleteResep(id)
 
-//    override suspend fun addBookmark(bookmark: Bookmark): Response<OperationResponse> =
-//        apiService.addBookmark(bookmark)
-//
-//    override suspend fun removeBookmark(id: Int): Response<OperationResponse> =
-//        apiService.removeBookmark(id)
 
     override suspend fun toggleBookmark(idUser: Int, idResep: Int): Response<OperationResponse> {
         return apiService.toggleBookmark(Bookmark(id_user = idUser, id_resep = idResep)) }
 
     override suspend fun getBookmarks(idUser: Int): Response<List<ResepResponse>> {
         return apiService.getBookmarks(idUser) }
+
+    override suspend fun getCountBookmarks(id: Int): Response<Int> =
+        apiService.getCountBookmarks(id)
 
     override suspend fun addKomentar(komentar: Komentar): Response<OperationResponse> =
         apiService.addKomentar(komentar)

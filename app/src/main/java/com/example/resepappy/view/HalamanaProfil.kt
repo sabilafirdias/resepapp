@@ -137,6 +137,7 @@ fun HalamanProfil(
                 }
 
                 is StatusUiProfil.Error -> {
+
                     ErrorScreen(status.message) {
                         viewModel.loadProfil(currentUserId)
                     }
@@ -405,21 +406,5 @@ private fun EditProfilForm(viewModel: ProfilViewModel) {
             },
             modifier = Modifier.fillMaxWidth()
         )
-    }
-}
-
-
-@Composable
-private fun ErrorScreen(message: String, onRetry: () -> Unit) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Error: $message")
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) {
-            Text("Coba Lagi")
-        }
     }
 }

@@ -10,8 +10,9 @@ object DestinasiHome {
 }
 
 @Serializable
-object DestinasiCari {
-    const val route = "cari"
+object DestinasiCari : DestinasiNavigasi {
+    override val route = "cari_resep"
+    override val titleRes = R.string.cari_resep
 }
 
 @Serializable

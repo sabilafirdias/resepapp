@@ -6,6 +6,9 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.resepappy.repositori.AplikasiResep
 import com.example.resepappy.viewmodel.AuthViewModel
+import com.example.resepappy.viewmodel.CariResepViewModel
+import com.example.resepappy.viewmodel.DetailResepViewModel
+import com.example.resepappy.viewmodel.EditResepViewModel
 import com.example.resepappy.viewmodel.HomeViewModel
 import com.example.resepappy.viewmodel.ProfilViewModel
 import com.example.resepappy.viewmodel.ResepViewModel
@@ -37,11 +40,20 @@ object PenyediaViewModel {
             ResepViewModel(aplikasiResep().container.repositoryResep)
         }
 
+        initializer {
+            DetailResepViewModel(aplikasiResep().container.repositoryResep)
+        }
+
+        initializer {
+            EditResepViewModel(aplikasiResep().container.repositoryResep)
+        }
+
+        initializer {
+            CariResepViewModel(aplikasiResep().container.repositoryResep)
+        }
+
 //        initializer {
 //            WelcomeViewModel(aplikasiResep())
 //        }
-
-        // initializer { DetailResepViewModel(...) }
-        // initializer { EditResepViewModel(...) }
     }
 }
