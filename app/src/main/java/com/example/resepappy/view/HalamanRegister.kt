@@ -46,10 +46,11 @@ fun HalamanRegister(
     ) { innerPadding ->
         RegisterBody(
             uiStateUser = viewModel.uiStateUser,
+            viewModel = viewModel,
             onRegisterClick = {
                 coroutineScope.launch {
                     if (viewModel.register()) {
-                        onNavigateBack()
+                        onNavigateLogin()
                     }
                 }
             },
@@ -62,6 +63,7 @@ fun HalamanRegister(
 @Composable
 fun RegisterBody(
     uiStateUser: UIStateUser,
+    viewModel: AuthViewModel,
     onRegisterClick: () -> Unit,
     onNavigateLogin: () -> Unit,
     modifier: Modifier = Modifier
@@ -72,6 +74,7 @@ fun RegisterBody(
     ) {
         FormRegister(
             uiStateUser = uiStateUser,
+            viewModel = viewModel,
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -114,10 +117,10 @@ fun RegisterBody(
 @Composable
 fun FormRegister(
     uiStateUser: UIStateUser,
+    viewModel: AuthViewModel,
     modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
-    val viewModel: AuthViewModel = viewModel()
     val coroutineScope = rememberCoroutineScope()
 
     Column(
@@ -162,6 +165,7 @@ fun FormRegister(
             value = uiStateUser.detailUser.password,
             onValueChange = { newPassword ->
                 viewModel.updatePassword(newPassword)
+                viewModel.updateConfirmPassword(viewModel.confirmPassword)
             },
             label = { Text("Password") },
             isError = uiStateUser.passwordError != null,
@@ -171,6 +175,22 @@ fun FormRegister(
             visualTransformation = PasswordVisualTransformation()
         )
         uiStateUser.passwordError?.let {
+            Text(it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+        }
+
+        OutlinedTextField(
+            value = viewModel.confirmPassword,
+            onValueChange = { it ->
+                viewModel.updateConfirmPassword(it)
+            },
+            label = { Text("Konfirmasi Password") },
+            isError = uiStateUser.passwordConfirmError != null,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = enabled,
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation()
+        )
+        uiStateUser.passwordConfirmError?.let {
             Text(it, color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
         }
     }

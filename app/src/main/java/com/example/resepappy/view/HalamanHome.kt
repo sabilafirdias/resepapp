@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -323,7 +324,7 @@ fun KomponenResep(
             ) {
                 IconButton(onClick = onBookmark) {
                     Icon(
-                        imageVector = if (resep.is_bookmarked) Icons.Filled.Check else Icons.Filled.FavoriteBorder,
+                        imageVector = if (resep.is_bookmarked) Icons.Filled.Check else Icons.Filled.Star,
                         contentDescription = "Bookmark",
                         tint = if (resep.is_bookmarked) Color.Red else LocalContentColor.current
                     )

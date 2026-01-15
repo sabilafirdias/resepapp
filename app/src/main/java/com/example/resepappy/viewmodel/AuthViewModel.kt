@@ -14,6 +14,9 @@ class AuthViewModel(
     var uiStateUser by mutableStateOf(UIStateUser())
         private set
 
+    var confirmPassword by mutableStateOf("")
+        private set
+
     var isLoading by mutableStateOf(false)
         private set
 
@@ -35,7 +38,18 @@ class AuthViewModel(
         val u = uiStateUser.detailUser
         return u.username.isNotBlank() &&
                 isValidEmail(u.email) &&
-                isStrongPassword(u.password)
+                isStrongPassword(u.password) &&
+                confirmPassword == u.password
+    }
+
+    fun updateConfirmPassword(value: String) {
+        confirmPassword = value
+        // Validasi apakah cocok dengan password utama
+        val error = if (value != uiStateUser.detailUser.password) {
+            "Password tidak cocok"
+        } else null
+
+        uiStateUser = uiStateUser.copy(passwordConfirmError = error)
     }
 
     private fun validasiInputLogin(): Boolean {

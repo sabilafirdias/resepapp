@@ -64,25 +64,25 @@ data class UIStateUser(
     val usernameError: String? = null,
     val emailError: String? = null,
     val passwordError: String? = null,
+    val passwordConfirmError: String? = null,
     val errorMessage: String? = null,
-    val isLoginMode: Boolean = false // ✅ Tambahkan ini
+    val isLoginMode: Boolean = false
 ) {
     val isEntryValid: Boolean = when {
         isLoginMode -> {
-            // Hanya butuh email & password
             emailError == null &&
-                    passwordError == null &&
-                    detailUser.email.isNotBlank() &&
-                    detailUser.password.isNotBlank()
+            passwordError == null &&
+            detailUser.email.isNotBlank() &&
+            detailUser.password.isNotBlank()
         }
         else -> {
-            // Butuh username, email, password
             usernameError == null &&
-                    emailError == null &&
-                    passwordError == null &&
-                    detailUser.username.isNotBlank() &&
-                    detailUser.email.isNotBlank() &&
-                    detailUser.password.isNotBlank()
+            emailError == null &&
+            passwordError == null &&
+            passwordConfirmError == null &&
+            detailUser.username.isNotBlank() &&
+            detailUser.email.isNotBlank() &&
+            detailUser.password.isNotBlank()
         }
     }
 }
