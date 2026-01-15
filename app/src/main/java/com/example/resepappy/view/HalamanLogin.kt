@@ -5,11 +5,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -17,7 +20,6 @@ import com.example.resepappy.R
 import com.example.resepappy.modeldata.DetailUser
 import com.example.resepappy.modeldata.UIStateUser
 import com.example.resepappy.uicontroller.route.DestinasiLogin
-import com.example.resepappy.uicontroller.route.DestinasiRegister
 import com.example.resepappy.viewmodel.AuthViewModel
 import com.example.resepappy.viewmodel.SessionViewModel
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
@@ -169,7 +171,9 @@ fun FormLogin(
             label = { Text("Password") },
             modifier = Modifier.fillMaxWidth(),
             enabled = enabled,
-            singleLine = true
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
         )
     }
 }
