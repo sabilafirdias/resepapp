@@ -21,6 +21,7 @@ import com.example.resepappy.view.HalamanDetailResep
 import com.example.resepappy.view.HalamanEditProfil
 import com.example.resepappy.view.HalamanEditResep
 import com.example.resepappy.view.HalamanHome
+import com.example.resepappy.view.HalamanKomentar
 import com.example.resepappy.view.HalamanLogin
 import com.example.resepappy.view.HalamanProfil
 import com.example.resepappy.view.HalamanRegister
@@ -177,5 +178,20 @@ fun HostNavigasi(
                 onNavigateBack = { navController.popBackStack() }
             )
         }
+
+        // Di dalam NavHost Anda
+        composable(
+            route = DestinasiKomentar.routeWithArgs,
+            arguments = listOf(navArgument(DestinasiKomentar.resepIdArg) { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idResep = backStackEntry.arguments?.getInt(DestinasiKomentar.resepIdArg) ?: 0
+            val idUserLogin = sessionViewModel.currentUserId ?: 0
+            HalamanKomentar(
+                idResep = idResep,
+                idUserLogin = idUserLogin,
+                onNavigateBack = { navController.popBackStack() }
+            )
+        }
     }
 }
+

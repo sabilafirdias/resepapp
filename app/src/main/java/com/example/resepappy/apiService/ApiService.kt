@@ -22,11 +22,6 @@ interface ApiService {
         @Query("email") email: String
     ): UniqueCheckResponse
 
-    @GET("auth/check.php")
-    suspend fun checkUser(
-        @Query("username") username: String,
-        @Query("email") email: String
-    ): List<User>
 
     @GET("user/get_profil.php")
     suspend fun getProfil(@Query("id_user") idUser: Int): Response<User>
@@ -36,6 +31,8 @@ interface ApiService {
 
     @DELETE("user/delete_akun.php")
     suspend fun deleteAkun(@Query("id_user") idUser: Int): Response<OperationResponse>
+
+
 
     @GET("resep/get_all_resep.php") // Sesuaikan dengan nama file PHP Anda
     suspend fun getAllResep(): Response<List<ResepResponse>>
@@ -64,12 +61,6 @@ interface ApiService {
 
 
 
-    @GET("komentar/get_komen.php")
-    suspend fun getKomentar(@Query("id_resep") idResep: Int): Response<List<Komentar>>
-
-    @POST("komentar/tambah_komen.php")
-    suspend fun addKomentar(@Body komentar: Komentar): Response<OperationResponse>
-
     @POST("bookmark/toggle_bookmark.php")
     suspend fun toggleBookmark(@Body bookmark: Bookmark): Response<OperationResponse>
 
@@ -78,4 +69,12 @@ interface ApiService {
 
     @GET("bookmark/get_jumlah_bookmark.php")
     suspend fun getCountBookmarks(@Query("id_resep") id: Int): Response<Int>
+
+
+
+    @GET("komentar/get_komen.php")
+    suspend fun getKomentar(@Query("id_resep") idResep: Int): Response<List<Komentar>>
+
+    @POST("komentar/tambah_komen.php")
+    suspend fun addKomentar(@Body komentar: Komentar): Response<OperationResponse>
 }

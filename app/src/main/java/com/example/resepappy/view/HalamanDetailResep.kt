@@ -56,6 +56,7 @@ import androidx.navigation.NavController
 import com.example.resepappy.R
 import com.example.resepappy.modeldata.Resep
 import com.example.resepappy.uicontroller.route.DestinasiDetailResep
+import com.example.resepappy.uicontroller.route.DestinasiKomentar
 import com.example.resepappy.viewmodel.DetailResepViewModel
 import com.example.resepappy.viewmodel.DetailUiState
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
@@ -134,7 +135,9 @@ fun HalamanDetailResep(
                     jumlahBookmark = viewModel.jumlahBookmark,
                     onEditClick = { onEditClick(idResep) },
                     onDelete = { showDeleteDialog = true },
-                    onCommentClick = { navController.navigate("komentar/$idResep") },
+                    onCommentClick = {
+                        navController.navigate("${DestinasiKomentar.route}/$idResep")
+                    },
                     modifier = Modifier.padding(innerPadding)
                 )
             }

@@ -24,15 +24,13 @@ interface ResepRepository {
     suspend fun tambahResep(request: ResepRequest.CreateResepRequest): Response<OperationResponse>
     suspend fun updateResep(id: Int, request: ResepRequest.UpdateResepRequest): Response<OperationResponse>
     suspend fun hapusResep(id: Int, idUser: Int): Response<OperationResponse>
-//    suspend fun addBookmark(bookmark: Bookmark): Response<OperationResponse>
-//    suspend fun removeBookmark(id: Int): Response<OperationResponse>
 
     suspend fun toggleBookmark(idUser: Int, idResep: Int): Response<OperationResponse>
     suspend fun getBookmarks(idUser: Int): Response<List<ResepResponse>>
     suspend fun getCountBookmarks(id: Int): Response<Int>
 
-    suspend fun addKomentar(komentar: Komentar): Response<OperationResponse>
     suspend fun getKomentar(idResep: Int): Response<List<Komentar>>
+    suspend fun addKomentar(komentar: Komentar): Response<OperationResponse>
 }
 
 class JaringanResepRepository(
@@ -80,6 +78,7 @@ class JaringanResepRepository(
     override suspend fun hapusResep(id: Int, idUser: Int): Response<OperationResponse> =
         apiService.deleteResep(id, idUser)
 
+
     override suspend fun toggleBookmark(idUser: Int, idResep: Int): Response<OperationResponse> {
         return apiService.toggleBookmark(Bookmark(id_user = idUser, id_resep = idResep)) }
 
@@ -89,9 +88,9 @@ class JaringanResepRepository(
     override suspend fun getCountBookmarks(id: Int): Response<Int> =
         apiService.getCountBookmarks(id)
 
-    override suspend fun addKomentar(komentar: Komentar): Response<OperationResponse> =
-        apiService.addKomentar(komentar)
 
-    override suspend fun getKomentar(idResep: Int): Response<List<Komentar>> =
+    override suspend fun getKomentar(idResep: Int) =
         apiService.getKomentar(idResep)
+    override suspend fun addKomentar(komentar: Komentar) =
+        apiService.addKomentar(komentar)
 }

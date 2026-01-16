@@ -10,6 +10,7 @@ import com.example.resepappy.viewmodel.CariResepViewModel
 import com.example.resepappy.viewmodel.DetailResepViewModel
 import com.example.resepappy.viewmodel.EditResepViewModel
 import com.example.resepappy.viewmodel.HomeViewModel
+import com.example.resepappy.viewmodel.KomentarViewModel
 import com.example.resepappy.viewmodel.ProfilViewModel
 import com.example.resepappy.viewmodel.ResepViewModel
 import com.example.resepappy.viewmodel.SessionViewModel
@@ -52,8 +53,8 @@ object PenyediaViewModel {
             CariResepViewModel(aplikasiResep().container.repositoryResep)
         }
 
-//        initializer {
-//            WelcomeViewModel(aplikasiResep())
-//        }
+        initializer {
+            KomentarViewModel(aplikasiResep().container.repositoryResep)
+        }
     }
 }
