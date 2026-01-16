@@ -1,7 +1,9 @@
 package com.example.resepappy.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,12 +29,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -47,9 +53,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.resepappy.R
 import com.example.resepappy.modeldata.Resep
 import com.example.resepappy.uicontroller.route.DestinasiDetailResep
-import com.example.resepappy.uicontroller.route.DestinasiEditResep
 import com.example.resepappy.viewmodel.DetailResepViewModel
 import com.example.resepappy.viewmodel.DetailUiState
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
@@ -147,109 +153,166 @@ fun DetailContent(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         item {
-            Text(text = resep.judul, style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
-            Text(text = "Oleh: ${resep.username}", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.Favorite, contentDescription = null, tint = Color.Red, modifier = Modifier.size(16.dp))
-                Spacer(Modifier.width(4.dp))
-                Text(text = "$jumlahBookmark orang menyimpan resep ini", style = MaterialTheme.typography.labelSmall)
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = resep.judul,
+                    style = MaterialTheme.typography.headlineLarge,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Oleh: ${resep.username}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Spacer(Modifier.height(8.dp))
+                Surface(
+                    shape = MaterialTheme.shapes.small,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    ) {
+                        Icon(Icons.Default.Star, contentDescription = null, tint = colorResource(id = R.color.pastelbrown), modifier = Modifier.size(16.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = "$jumlahBookmark orang menyimpan ini",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
-            HorizontalDivider(Modifier.padding(vertical = 8.dp))
         }
 
+        // --- Bagian Bahan ---
         item {
-            Text(text = "Bahan-bahan", style = MaterialTheme.typography.titleLarge)
-            resep.bahan.forEach { bahan ->
-                Text("• ${bahan.nama_bahan} (${bahan.takaran})")
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Bahan-bahan",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    HorizontalDivider(Modifier.padding(vertical = 12.dp))
+                    resep.bahan.forEach { bahan ->
+                        Row(Modifier.padding(vertical = 4.dp)) {
+                            Text("•", Modifier.width(20.dp))
+                            Text(
+                                text = "${bahan.nama_bahan}",
+                                modifier = Modifier.weight(1f),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = bahan.takaran,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
             }
         }
 
+        // --- Bagian Langkah ---
         item {
+            Text(
+                text = "Langkah Memasak",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(8.dp))
             val langkahList = resep.langkah
                 .split("|", "\n")
                 .map { it.trim() }
                 .filter { it.isNotBlank() }
 
-            Text(text = "Langkah Memasak", style = MaterialTheme.typography.titleLarge)
-
             if (langkahList.isEmpty()) {
                 Text(text = resep.langkah, style = MaterialTheme.typography.bodyLarge)
             } else {
                 langkahList.forEachIndexed { index, langkah ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = "${index + 1}.",
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.width(28.dp)
-                        )
+                    Row(modifier = Modifier.padding(vertical = 8.dp)) {
+                        Surface(
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(28.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Text(
+                                    text = "${index + 1}",
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    style = MaterialTheme.typography.labelLarge
+                                )
+                            }
+                        }
+                        Spacer(Modifier.width(12.dp))
                         Text(
                             text = langkah,
                             style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.align(Alignment.CenterVertically)
                         )
                     }
                 }
             }
         }
 
-        if (resep.catatan != null) {
+        // --- Bagian Catatan ---
+        if (!resep.catatan.isNullOrBlank()) {
             item {
                 Card(
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF9C4)),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                    ),
+                    shape = MaterialTheme.shapes.medium
                 ) {
-                    Column(Modifier.padding(12.dp)) {
-                        Text("Catatan:", fontWeight = FontWeight.Bold)
-                        Text(resep.catatan)
+                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
+                        Icon(Icons.Default.Info, contentDescription = null)
+                        Spacer(Modifier.width(12.dp))
+                        Column {
+                            Text("Tips/Catatan:", fontWeight = FontWeight.ExtraBold)
+                            Text(resep.catatan, style = MaterialTheme.typography.bodyMedium)
+                        }
                     }
                 }
             }
         }
 
+        // --- Tombol Aksi ---
         item {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(
                     onClick = onCommentClick,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium
                 ) {
-                    Spacer(Modifier.width(8.dp))
-                    Text("Komentar")
+                    Text("Lihat Komentar")
                 }
 
                 if (resep.id_user == idUserLogin) {
-                    Button(
-                        onClick = onEditClick,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFA000)),
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Spacer(Modifier.width(8.dp))
-                        Text("Edit")
-                    }
-                }
-            }
-
-                if (resep.id_user == idUserLogin) {
-                    Button(
+                    OutlinedButton(
                         onClick = onDelete,
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                        modifier = Modifier.fillMaxWidth()
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error),
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = MaterialTheme.shapes.medium
                     ) {
-                        Text("Hapus Resep", color = Color.White)
+                        Text("Hapus Resep")
                     }
                 }
             }
         }
     }
+}
 
 @Composable
 fun ErrorScreen(message: String, onRetry: () -> Unit) {
