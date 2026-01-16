@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -27,9 +28,14 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -54,8 +60,38 @@ fun HalamanDetailResep(
     onEditClick: (Int) -> Unit,
     viewModel: DetailResepViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(idResep) {
         viewModel.getDetailResep(idResep)
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Hapus Resep") },
+            text = { Text("Apakah Anda yakin ingin menghapus resep ini?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showDeleteDialog = false
+                        viewModel.viewModelScope.launch {
+                            if (viewModel.hapusResep(idResep, idUserLogin)) {
+                                navController.popBackStack()
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("Hapus")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Batal")
+                }
+            }
+        )
     }
 
     Scaffold(
@@ -87,13 +123,7 @@ fun HalamanDetailResep(
                     idUserLogin = idUserLogin,
                     jumlahBookmark = viewModel.jumlahBookmark,
                     onEditClick = { onEditClick(idResep) },
-                    onDelete = {
-                        viewModel.viewModelScope.launch {
-                            if (viewModel.hapusResep(idResep)) {
-                                navController.popBackStack()
-                            }
-                        }
-                    },
+                    onDelete = { showDeleteDialog = true },
                     onCommentClick = { navController.navigate("komentar/$idResep") },
                     modifier = Modifier.padding(innerPadding)
                 )

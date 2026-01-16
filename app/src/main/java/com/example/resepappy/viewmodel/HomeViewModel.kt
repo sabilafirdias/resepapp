@@ -64,19 +64,29 @@ class HomeViewModel(private val repository: ResepRepository) : ViewModel() {
     }
 
     fun toggleBookmark(idUser: Int, idResep: Int) {
-        if (idUser <= 0) return
-
         viewModelScope.launch {
             try {
                 val response = repository.toggleBookmark(idUser, idResep)
                 if (response.isSuccessful) {
-                    loadByKategori()
-                } else {
-                    statusUi = StatusUiHome.Error
+                    updateResepBookmarkStatus(idResep)
                 }
-            } catch (e: Exception) {
-                statusUi = StatusUiHome.Error
+            } catch (e: Exception) { }
+        }
+    }
+
+    private fun updateResepBookmarkStatus(idResep: Int) {
+        val currentState = statusUi
+        if (currentState is StatusUiHome.Success) {
+            fun List<Resep>.mapStatus() = map {
+                if (it.id_resep == idResep) it.copy(is_bookmarked = !it.is_bookmarked) else it
             }
+
+            statusUi = currentState.copy(
+                allResep = currentState.allResep.mapStatus(),
+                makananBerat = currentState.makananBerat.mapStatus(),
+                cemilan = currentState.cemilan.mapStatus(),
+                minuman = currentState.minuman.mapStatus()
+            )
         }
     }
 }

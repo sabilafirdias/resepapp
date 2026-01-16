@@ -12,7 +12,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
@@ -25,6 +24,7 @@ import com.example.resepappy.uicontroller.route.DestinasiCari
 import com.example.resepappy.uicontroller.route.DestinasiHome
 import com.example.resepappy.uicontroller.route.DestinasiLogin
 import com.example.resepappy.uicontroller.route.DestinasiProfil
+import com.example.resepappy.uicontroller.route.DestinasiWelcome
 import com.example.resepappy.viewmodel.ProfilViewModel
 import com.example.resepappy.viewmodel.SessionViewModel
 import com.example.resepappy.viewmodel.StatusUiProfil
@@ -93,7 +93,7 @@ fun HalamanProfil(
                         if (viewModel.deleteAccount(currentUserId)) {
                             sessionViewModel.clearSession()
                             onLogout()
-                            navController.navigate(DestinasiLogin.route) {
+                            navController.navigate(DestinasiWelcome.route) {
                                 popUpTo(0) { inclusive = true }
                                 launchSingleTop = true
                             }
@@ -163,6 +163,12 @@ private fun ProfilContent(
         viewModel.loadBookmarkUser(profil.id_user)
     }
 
+    LaunchedEffect(selectedTab) {
+        if (selectedTab == 1) {
+            viewModel.loadBookmarkUser(profil.id_user)
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         // Sticky TabRow di bagian atas
         TabRow(selectedTabIndex = selectedTab) {
@@ -207,9 +213,12 @@ private fun ProfilContent(
                         item { EmptyState("Belum ada resep yang disimpan.") }
                     } else {
                         items(viewModel.listBookmarkUser) { resep ->
-                            ItemResepProfil(resep = resep, onClick = {
-                                navController.navigate("detail_resep/${resep.id_resep}")
-                            })
+                            KomponenResep(
+                                resep = resep,
+                                onClick = { navController.navigate("detail_resep/${resep.id_resep}") },
+                                onBookmark = { viewModel.toggleBookmark(profil.id_user, resep.id_resep) },
+                                onComment = { navController.navigate("komentar/${resep.id_resep}") }
+                            )
                         }
                     }
                 }
@@ -221,20 +230,17 @@ private fun ProfilContent(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                if (viewModel.isEditing) {
-                                    EditProfilForm(viewModel = viewModel)
-                                } else {
                                     ProfilInfo(profil = profil)
-                                }
                             }
                         }
                     }
 
                     item {
-                        // Memanggil tombol aksi (Edit, Simpan, Batal)
                         ActionButtons(
                             viewModel = viewModel,
                             profil = profil,
+                            navController = navController,
+                            idUserLogin = profil.id_user,
                             onLogout = onLogout,
                             onDeleteAccount = onDeleteAccount
                         )
@@ -257,10 +263,10 @@ fun ItemResepProfil(resep: Resep, onClick: () -> Unit) {
     ) {
         Row(
             modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Anda bisa menambahkan AsyncImage di sini jika ada foto resep
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(text = resep.judul, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                 Text(text = "Kategori: ${resep.kategori}", fontSize = 12.sp, color = Color.Gray)
             }
@@ -272,43 +278,35 @@ fun ItemResepProfil(resep: Resep, onClick: () -> Unit) {
 fun ActionButtons(
     viewModel: ProfilViewModel,
     profil: User,
+    navController: NavController,
+    idUserLogin: Int,
     onLogout: () -> Unit,
     onDeleteAccount: () -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        if (viewModel.isEditing) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(
-                    onClick = { viewModel.saveChanges(profil.id_user) },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.pastelbrown))
-                ) { Text("Simpan") }
+        Button(
+            onClick = {
+                val routeWithId = "edit_profil/${idUserLogin}"
+                navController.navigate(routeWithId)
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.pastelbrown))
+        ) {
+            Text("Edit Profil")
+        }
 
-                OutlinedButton(
-                    onClick = { viewModel.cancelEdit() },
-                    modifier = Modifier.weight(1f)
-                ) { Text("Batal") }
-            }
-        } else {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
-                onClick = { viewModel.startEdit() },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.pastelbrown))
-            ) { Text("Edit Profil") }
+                onClick = onLogout,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+            ) { Text("Logout") }
 
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(
-                    onClick = onLogout,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
-                ) { Text("Logout") }
-
-                Button(
-                    onClick = onDeleteAccount,
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.merah))
-                ) { Text("Hapus Akun") }
-            }
+            Button(
+                onClick = onDeleteAccount,
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.merah))
+            ) { Text("Hapus Akun") }
         }
     }
 }
@@ -357,54 +355,4 @@ private fun DeleteConfirmationDialog(
             }
         }
     )
-}
-
-@Composable
-private fun EditProfilForm(viewModel: ProfilViewModel) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        OutlinedTextField(
-            value = viewModel.editUsername,
-            onValueChange = { viewModel.editUsername = it },
-            label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = viewModel.editEmail,
-            onValueChange = { viewModel.editEmail = it },
-            label = { Text("Email") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        val passwordMismatch = viewModel.newPassword.isNotEmpty() &&
-                viewModel.newPassword != viewModel.confirmPassword
-
-        OutlinedTextField(
-            value = viewModel.oldPassword,
-            onValueChange = { viewModel.oldPassword = it },
-            label = { Text("Password Lama (opsional)") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = viewModel.newPassword,
-            onValueChange = { viewModel.newPassword = it },
-            label = { Text("Password Baru (opsional)") },
-            visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        OutlinedTextField(
-            value = viewModel.confirmPassword,
-            onValueChange = { viewModel.confirmPassword = it },
-            label = { Text("Konfirmasi Password Baru") },
-            visualTransformation = PasswordVisualTransformation(),
-            isError = passwordMismatch,
-            supportingText = {
-                if (passwordMismatch) Text("Password tidak cocok", color = MaterialTheme.colorScheme.error)
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
 }

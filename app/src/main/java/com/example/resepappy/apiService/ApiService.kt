@@ -54,7 +54,10 @@ interface ApiService {
     suspend fun updateResep(@Body request: ResepRequest.UpdateResepRequest): Response<OperationResponse>
 
     @DELETE("resep/delete_resep.php")
-    suspend fun deleteResep(@Query("id_resep") id: Int): Response<OperationResponse>
+    suspend fun deleteResep(
+        @Query("id_resep") idResep: Int,
+        @Query("id_user") idUser: Int
+    ): Response<OperationResponse>
 
     @GET("resep/search_resep.php")
     suspend fun searchResep(@Query("q") query: String): Response<List<ResepResponse>>
@@ -66,14 +69,6 @@ interface ApiService {
 
     @POST("komentar/tambah_komen.php")
     suspend fun addKomentar(@Body komentar: Komentar): Response<OperationResponse>
-
-
-
-//    @POST("bookmark/tambah_bookmark.php")
-//    suspend fun addBookmark(@Body bookmark: Bookmark): Response<OperationResponse>
-//
-//    @DELETE("bookmark/hapus_bookmark.php")
-//    suspend fun removeBookmark(@Query("id") id: Int): Response<OperationResponse>
 
     @POST("bookmark/toggle_bookmark.php")
     suspend fun toggleBookmark(@Body bookmark: Bookmark): Response<OperationResponse>

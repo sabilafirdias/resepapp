@@ -23,8 +23,7 @@ interface ResepRepository {
     suspend fun searchResep(keyword: String): Response<List<ResepResponse>>
     suspend fun tambahResep(request: ResepRequest.CreateResepRequest): Response<OperationResponse>
     suspend fun updateResep(id: Int, request: ResepRequest.UpdateResepRequest): Response<OperationResponse>
-    suspend fun hapusResep(id: Int): Response<OperationResponse>
-
+    suspend fun hapusResep(id: Int, idUser: Int): Response<OperationResponse>
 //    suspend fun addBookmark(bookmark: Bookmark): Response<OperationResponse>
 //    suspend fun removeBookmark(id: Int): Response<OperationResponse>
 
@@ -78,9 +77,8 @@ class JaringanResepRepository(
     override suspend fun updateResep(id: Int, request: ResepRequest.UpdateResepRequest): Response<OperationResponse> =
         apiService.updateResep(request)
 
-    override suspend fun hapusResep(id: Int): Response<OperationResponse> =
-        apiService.deleteResep(id)
-
+    override suspend fun hapusResep(id: Int, idUser: Int): Response<OperationResponse> =
+        apiService.deleteResep(id, idUser)
 
     override suspend fun toggleBookmark(idUser: Int, idResep: Int): Response<OperationResponse> {
         return apiService.toggleBookmark(Bookmark(id_user = idUser, id_resep = idResep)) }

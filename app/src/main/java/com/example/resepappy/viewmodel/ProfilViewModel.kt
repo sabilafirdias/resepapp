@@ -46,7 +46,6 @@ class ProfilViewModel(
     var errorMessage by mutableStateOf("")
         private set
     var successMessage by mutableStateOf("")
-        private set
 
     var listBookmarkUser by mutableStateOf<List<Resep>>(emptyList())
         private set
@@ -88,6 +87,20 @@ class ProfilViewModel(
         }
     }
 
+    fun toggleBookmark(idUser: Int, idResep: Int) {
+        viewModelScope.launch {
+            try {
+                val response = repository.toggleBookmark(idUser, idResep)
+                if (response.isSuccessful) {
+                    // Refresh list bookmark setelah status berubah di server
+                    loadBookmarkUser(idUser)
+                }
+            } catch (e: Exception) {
+                // Biarkan kosong sesuai gaya codingan Anda
+            }
+        }
+    }
+
     fun loadBookmarkUser(idUser: Int) {
         viewModelScope.launch {
             try {
@@ -95,7 +108,9 @@ class ProfilViewModel(
                 if (response.isSuccessful) {
                     listBookmarkUser = response.body()?.map { it.toResep() } ?: emptyList()
                 }
-            } catch (e: Exception) { }
+            } catch (e: Exception) {
+                listBookmarkUser = emptyList()
+            }
         }
     }
 
@@ -118,59 +133,65 @@ class ProfilViewModel(
         errorMessage = ""
     }
 
-    fun saveChanges(idUser: Int) {
+    suspend fun saveChanges(idUser: Int): Boolean {
         errorMessage = ""
         successMessage = ""
 
         if (editUsername.isBlank()) {
             errorMessage = "Username wajib diisi"
-            return
+            return false
         }
 
         val emailPattern = "^[A-Za-z0-9+_.-]+@[A-za-z0-9.-]+\\.[a-z]+$"
         if (!editEmail.matches(emailPattern.toRegex())) {
             errorMessage = "Format email tidak valid"
-            return
+            return false
         }
 
         if (oldPassword.isNotBlank() || newPassword.isNotBlank() || confirmPassword.isNotBlank()) {
             if (oldPassword.isBlank()) {
                 errorMessage = "Password lama diperlukan untuk keamanan"
-                return
+                return false
             }
             if (newPassword.length < 8) {
                 errorMessage = "Password baru minimal 8 karakter"
-                return
+                return false
             }
             if (newPassword != confirmPassword) {
                 errorMessage = "Konfirmasi password baru tidak cocok"
-                return
+                return false
             }
         }
 
-        viewModelScope.launch {
-            try {
-                val request = EditProfilRequest(
-                    id_user = idUser,
-                    username = editUsername,
-                    email = editEmail,
-                    old_password = oldPassword.ifBlank { null },
-                    new_password = newPassword.ifBlank { null }
-                )
+        return try {
+            val request = EditProfilRequest(
+                id_user = idUser,
+                username = editUsername,
+                email = editEmail,
+                old_password = oldPassword.ifBlank { null },
+                new_password = newPassword.ifBlank { null }
+            )
 
-                val response = repository.updateProfil(request)
-                if (response.isSuccessful) {
-                    successMessage = "Profil berhasil diperbarui!"
-                    isEditing = false
-                    loadProfil(idUser)
-                } else {
-                    errorMessage = response.errorBody()?.string() ?: "Gagal memperbarui profil"
+            val response = repository.updateProfil(request)
+            if (response.isSuccessful) {
+                successMessage = "Profil berhasil diperbarui!"
+                isEditing = false
+                val refresh = repository.getProfil(idUser)
+                if (refresh.isSuccessful) {
+                    currentProfil = refresh.body()
+                    currentProfil?.let { resetFields(it) }
                 }
-            } catch (e: IOException) {
-                errorMessage = "Gagal terhubung ke server"
-            } catch (e: Exception) {
-                errorMessage = "Terjadi kesalahan: ${e.message}"
+                true
+            } else {
+                errorMessage = response.errorBody()?.string() ?: "Gagal memperbarui profil"
+                false
             }
+        } catch (e: IOException) {
+            errorMessage = "Gagal terhubung ke server"
+            false
+        } catch (e: Exception) {
+            errorMessage = "Terjadi kesalahan: ${e.message}"
+            false
         }
     }
 

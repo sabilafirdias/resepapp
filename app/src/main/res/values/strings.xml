@@ -31,6 +31,8 @@
     <string name="field_wajib">* Field wajib diisi</string>
     <string name="detail_resep">Detail Resep</string>
     <string name="cari_resep">Cari Resep</string>
+    <string name="edit_profil">Edit Profil</string>
+
 
     <string name="error_email_salah">Email atau kata sandi salah</string>
     <string name="error_field_kosong">Harap isi semua field</string>

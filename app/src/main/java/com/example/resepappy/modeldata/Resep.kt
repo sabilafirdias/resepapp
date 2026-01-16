@@ -52,8 +52,9 @@ data class ResepResponse(
     val kategori: String,
     val created_at: String,
     val updated_at: String? = null,
-    val username: String = "", // Tambahkan ini
-    val bahan: List<Bahan> = emptyList() // Tambahkan ini
+    val username: String = "",
+    val bahan: List<Bahan> = emptyList(),
+    val is_bookmarked: Int = 0
 )
 
 fun ResepResponse.toResep(): Resep = Resep(
@@ -66,7 +67,8 @@ fun ResepResponse.toResep(): Resep = Resep(
     created_at = created_at,
     updated_at = updated_at ?: "",
     username = username,
-    bahan = bahan
+    bahan = bahan,
+    is_bookmarked = is_bookmarked == 1
 )
 
 data class DetailResep(

@@ -18,6 +18,7 @@ import com.example.resepappy.uicontroller.route.*
 import com.example.resepappy.view.HalamanBuatResep
 import com.example.resepappy.view.HalamanCari
 import com.example.resepappy.view.HalamanDetailResep
+import com.example.resepappy.view.HalamanEditProfil
 import com.example.resepappy.view.HalamanEditResep
 import com.example.resepappy.view.HalamanHome
 import com.example.resepappy.view.HalamanLogin
@@ -117,6 +118,17 @@ fun HostNavigasi(
                         popUpTo(0) { inclusive = true }
                     }
                 }
+            )
+        }
+
+        composable(
+            route = DestinasiEditProfil.route,
+            arguments = listOf(navArgument("idUser") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val idUser = backStackEntry.arguments?.getInt("idUser") ?: 0
+            HalamanEditProfil(
+                idUser = idUser,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 

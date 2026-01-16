@@ -213,7 +213,8 @@ fun HomeContent(
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(bottom = 16.dp)
     ) {
         if (resepList.isEmpty()) {
             item {
@@ -226,7 +227,10 @@ fun HomeContent(
                 )
             }
         } else {
-            items(resepList) { resep ->
+            items(
+                items = resepList,
+                key = { it.id_resep }
+            ) { resep ->
                 KomponenResep(
                     resep = resep,
                     onClick = { onResepClick(resep.id_resep) },
@@ -325,16 +329,8 @@ fun KomponenResep(
                 IconButton(onClick = onBookmark) {
                     Icon(
                         imageVector = if (resep.is_bookmarked) Icons.Filled.Check else Icons.Filled.Star,
-                        contentDescription = "Bookmark",
-                        tint = if (resep.is_bookmarked) Color.Red else LocalContentColor.current
+                        contentDescription = "Bookmark"
                     )
-                }
-                IconButton(onClick = onComment) {
-                    BadgedBox(badge = {
-                        if(resep.jumlah_komentar > 0) Badge { Text(resep.jumlah_komentar.toString()) }
-                    }) {
-                        Icon(Icons.Filled.Email, contentDescription = "Komentar")
-                    }
                 }
             }
         }

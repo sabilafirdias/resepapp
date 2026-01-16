@@ -60,9 +60,10 @@ class DetailResepViewModel(private val repository: ResepRepository) : ViewModel(
         }
     }
 
-    suspend fun hapusResep(idResep: Int): Boolean {
+    suspend fun hapusResep(idResep: Int, idUser: Int): Boolean {
         return try {
-            repository.hapusResep(idResep).isSuccessful
+            val response = repository.hapusResep(idResep, idUser)
+            response.isSuccessful
         } catch (e: Exception) {
             false
         }

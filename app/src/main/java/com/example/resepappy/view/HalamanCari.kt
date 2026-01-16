@@ -71,7 +71,7 @@ fun HalamanCari(
                 // REQ-22: Empty State
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        "Tidak ditemukan resep dengan kata kunci '${viewModel.searchQuery}'.\nCoba kata kunci lain.",
+                        "Tidak ditemukan resep dengan kata kunci '${viewModel.searchQuery}'.",
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                         color = Color.Gray
                     )
