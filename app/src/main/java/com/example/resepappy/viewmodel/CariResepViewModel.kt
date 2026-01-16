@@ -22,8 +22,6 @@ class CariResepViewModel(private val repository: ResepRepository) : ViewModel() 
     fun onQueryChange(newQuery: String) {
         searchQuery = newQuery
         searchingStarted = true
-
-        // Debounce: Menunggu user selesai mengetik (500ms) sebelum menembak API
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             if (newQuery.isBlank()) {
@@ -37,9 +35,17 @@ class CariResepViewModel(private val repository: ResepRepository) : ViewModel() 
             try {
                 val response = repository.searchResep(newQuery)
                 if (response.isSuccessful) {
+                    val dataDariApi = response.body() ?: emptyList()
+
                     listHasilCari.clear()
-                    response.body()?.forEach {
-                        listHasilCari.add(it.toResep())
+                    dataDariApi.forEach { resepResponse ->
+                        val resep = resepResponse.toResep()
+                        val matchingBahan = resep.bahan.any { it.nama_bahan.contains(newQuery, ignoreCase = true) }
+                        val matchingJudul = resep.judul.contains(newQuery, ignoreCase = true)
+
+                        if (matchingJudul || matchingBahan) {
+                            listHasilCari.add(resep)
+                        }
                     }
                 }
             } catch (e: Exception) {
