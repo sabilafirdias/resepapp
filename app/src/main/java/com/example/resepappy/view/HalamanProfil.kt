@@ -299,7 +299,7 @@ fun ActionButtons(
             Button(
                 onClick = onLogout,
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.pastelbrown))
             ) { Text("Logout") }
 
             Button(
