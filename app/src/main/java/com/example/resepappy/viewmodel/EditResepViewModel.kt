@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.resepappy.modeldata.Bahan
+import com.example.resepappy.modeldata.Bahan // Pastikan model data konsisten
 import com.example.resepappy.modeldata.ResepRequest
 import com.example.resepappy.modeldata.toResep
 import com.example.resepappy.repositori.ResepRepository
@@ -19,13 +19,17 @@ class EditResepViewModel(private val repository: ResepRepository) : ViewModel() 
     var langkah by mutableStateOf("")
     var catatan by mutableStateOf("")
 
-    var bahanList = mutableStateListOf<Bahan>()
+    // Gunakan SnapshotStateList agar UI otomatis update saat add/remove
+    val bahanList = mutableStateListOf<Bahan>()
+
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
     var isUpdateSuccess by mutableStateOf(false)
 
-    // Fungsi untuk memuat data lama ke formulir
     fun loadResepData(idResep: Int) {
+        // Hanya load jika data masih kosong untuk mencegah reset saat rotasi layar
+        if (judul.isNotEmpty()) return
+
         viewModelScope.launch {
             isLoading = true
             try {
@@ -37,6 +41,10 @@ class EditResepViewModel(private val repository: ResepRepository) : ViewModel() 
                         kategori = it.kategori
                         langkah = it.langkah
                         catatan = it.catatan ?: ""
+
+                        // Cara benar mengisi SnapshotStateList
+                        bahanList.clear()
+                        bahanList.addAll(it.bahan)
                     }
                 }
             } catch (e: Exception) {
@@ -47,17 +55,9 @@ class EditResepViewModel(private val repository: ResepRepository) : ViewModel() 
         }
     }
 
-    fun tambahBahan() {
-        bahanList.add(Bahan(nama_bahan = "", takaran = ""))
-    }
-
-    fun hapusBahan(index: Int) {
-        if (bahanList.size > 1) bahanList.removeAt(index)
-    }
-
     fun updateResep(idResep: Int, idUser: Int) {
-        if (judul.isBlank() || kategori.isBlank() || langkah.isBlank() || bahanList.any { it.nama_bahan.isBlank() }) {
-            errorMessage = "Semua kolom (kecuali catatan) wajib diisi!"
+        if (judul.isBlank() || kategori.isBlank() || langkah.isBlank() || bahanList.isEmpty()) {
+            errorMessage = "Semua kolom wajib diisi!"
             return
         }
 

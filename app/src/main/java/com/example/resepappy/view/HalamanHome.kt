@@ -44,7 +44,7 @@ fun HalamanHome(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(Unit) {
-        viewModel.loadByKategori()
+        viewModel.loadByKategori(idUserLogin)
     }
 
     Scaffold(
@@ -81,7 +81,7 @@ fun HalamanHome(
     ) { innerPadding ->
         when (val state = uiState) {
             is StatusUiHome.Loading -> LoadingScreen()
-            is StatusUiHome.Error -> ErrorScreen(retryAction = { viewModel.loadByKategori() })
+            is StatusUiHome.Error -> ErrorScreen(retryAction = { viewModel.loadByKategori(idUserLogin) })
             is StatusUiHome.Success -> {
                 val listDitampilkan = when (state.selectedCategory) {
                     "Makanan Berat" -> state.makananBerat
@@ -297,7 +297,7 @@ fun KomponenResep(
                         )
 
                         // Tampilkan maksimal 3 bahan pertama
-                        resep.bahan.take(3).forEach { bahan ->
+                        resep.bahan.take(2).forEach { bahan ->
                             Text(
                                 text = "• ${bahan.nama_bahan} ${bahan.takaran}",
                                 style = MaterialTheme.typography.bodySmall,
@@ -306,9 +306,9 @@ fun KomponenResep(
                         }
 
                         // Jika ada lebih dari 3 bahan, tampilkan "..."
-                        if (resep.bahan.size > 3) {
+                        if (resep.bahan.size > 2) {
                             Text(
-                                text = "... dan ${resep.bahan.size - 3} bahan lainnya",
+                                text = "... dan ${resep.bahan.size - 2} bahan lainnya",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.padding(top = 4.dp)

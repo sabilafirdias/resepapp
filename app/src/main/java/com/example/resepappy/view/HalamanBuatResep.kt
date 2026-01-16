@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +23,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.resepappy.R
 import com.example.resepappy.modeldata.DetailBahan
+import com.example.resepappy.uicontroller.route.DestinasiBuatResep
+import com.example.resepappy.uicontroller.route.DestinasiEditResep
 import com.example.resepappy.uicontroller.route.DestinasiHome
 import com.example.resepappy.viewmodel.ResepViewModel
 import com.example.resepappy.viewmodel.StatusUiResep
@@ -33,6 +36,7 @@ import kotlinx.coroutines.launch
 fun HalamanBuatResep(
     idUser: Int,
     navController: NavController,
+    onNavigateBack: () -> Unit,
     viewModel: ResepViewModel = viewModel(factory = PenyediaViewModel.Factory),
     modifier: Modifier = Modifier
 ) {
@@ -51,9 +55,6 @@ fun HalamanBuatResep(
                     popUpTo(DestinasiHome.route) { inclusive = false }
                 }
             }
-            is StatusUiResep.OperationError -> {
-                // Tampilkan snackbar error (opsional)
-            }
             else -> {}
         }
     }
@@ -62,13 +63,10 @@ fun HalamanBuatResep(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.buat_resep_baru)) },
+                title = stringResource(DestinasiBuatResep.titleRes),
+                canNavigateBack = true,
                 scrollBehavior = scrollBehavior,
-                        navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
-                    }
-                }
+                navigateUp = onNavigateBack
             )
         },
         floatingActionButton = {
@@ -111,6 +109,8 @@ fun FormBuatResepLengkap(
     var expanded by remember { mutableStateOf(false) }
     var namaBahanBaru by remember { mutableStateOf("") }
     var takaranBaru by remember { mutableStateOf("") }
+    var stepBaru by remember { mutableStateOf("") }
+    var isEditingCatatan by remember { mutableStateOf(false) }
 
     LazyColumn(
         modifier = modifier.padding(16.dp),
@@ -156,43 +156,6 @@ fun FormBuatResepLengkap(
                     }
                 }
             }
-        }
-
-        item {
-            Text("Langkah Pembuatan", style = MaterialTheme.typography.titleMedium)
-            OutlinedTextField(
-                value = detailResep.langkah,
-                onValueChange = { onValueChange(detailResep.copy(langkah = it)) },
-                label = { Text("Tulis langkah-langkah secara lengkap") },
-                minLines = 5,
-                maxLines = 10,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
-        item {
-            Surface(
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text("Catatan (Opsional)", style = MaterialTheme.typography.labelMedium)
-                    Text(
-                        text = detailResep.catatan.ifEmpty { "Tambahkan catatan pribadi, tips, atau variasi..." },
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (detailResep.catatan.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-            OutlinedTextField(
-                value = detailResep.catatan,
-                onValueChange = { onValueChange(detailResep.copy(catatan = it)) },
-                label = { Text("Catatan") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                enabled = false // Biar tidak bisa diedit langsung di sini
-            )
         }
 
         item {
@@ -251,8 +214,83 @@ fun FormBuatResepLengkap(
             }
         }
 
+        item { Text("Langkah Pembuatan", style = MaterialTheme.typography.titleMedium) }
+
+        val langkahList = if (detailResep.langkah.isBlank()) emptyList() else detailResep.langkah.split("\n")
+
+        itemsIndexed(langkahList) { index, langkah ->
+            ListItem(
+                headlineContent = { Text("Langkah ${index + 1}") },
+                supportingContent = { Text(langkah) },
+                trailingContent = {
+                    IconButton(onClick = {
+                        val newList = langkahList.toMutableList().apply { removeAt(index) }
+                        onValueChange(detailResep.copy(langkah = newList.joinToString("\n")))
+                    }) { Icon(Icons.Default.Delete, contentDescription = null) }
+                }
+            )
+        }
+
         item {
-            Text("* Judul dan minimal satu bahan wajib diisi", fontSize = MaterialTheme.typography.labelSmall.fontSize)
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(
+                    value = stepBaru,
+                    onValueChange = { stepBaru = it },
+                    label = { Text("Deskripsi Langkah") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Button(
+                    onClick = {
+                        val newList = if (detailResep.langkah.isEmpty()) stepBaru else "${detailResep.langkah}\n$stepBaru"
+                        onValueChange(detailResep.copy(langkah = newList))
+                        stepBaru = ""
+                    },
+                    enabled = stepBaru.isNotBlank(),
+                    modifier = Modifier.align(Alignment.End)
+                ) { Text("Tambah Step") }
+            }
+        }
+
+        item {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Catatan (Opsional)", style = MaterialTheme.typography.titleSmall)
+                        IconButton(onClick = { isEditingCatatan = !isEditingCatatan }) {
+                            Icon(
+                                imageVector = Icons.Default.Edit,
+                                contentDescription = "Edit Catatan"
+                            )
+                        }
+                    }
+
+                    if (isEditingCatatan) {
+                        OutlinedTextField(
+                            value = detailResep.catatan,
+                            onValueChange = { onValueChange(detailResep.copy(catatan = it)) },
+                            placeholder = { Text("Tips atau variasi...") },
+                            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                        )
+                    } else {
+                        Text(
+                            text = detailResep.catatan.ifBlank { "Belum ada catatan." },
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+                }
+            }
+        }
+
+        item {
+            Text("* Judul, langkah, dan minimal satu bahan wajib diisi", fontSize = MaterialTheme.typography.labelSmall.fontSize)
         }
     }
 }

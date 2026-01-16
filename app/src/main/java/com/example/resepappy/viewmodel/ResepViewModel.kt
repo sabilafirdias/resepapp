@@ -41,7 +41,8 @@ class ResepViewModel(
     fun updateFormState(detailResep: DetailResep) {
         val isValid = detailResep.judul.isNotBlank() &&
                 detailResep.langkah.isNotBlank() &&
-                detailResep.kategori.isNotBlank()
+                detailResep.kategori.isNotBlank() &&
+                detailResep.bahan.isNotEmpty() // Validasi: Bahan tidak boleh kosong
 
         uiStateResep = UIStateResep(detailResep, isValid)
         statusUi = StatusUiResep.FormInput(uiStateResep)
@@ -58,7 +59,8 @@ class ResepViewModel(
                     langkah = currentForm.langkah,
                     catatan = currentForm.catatan.ifBlank { null },
                     kategori = currentForm.kategori,
-                    bahan = emptyList()
+                    // Fix: Map DetailBahan to Bahan using the extension function from Bahan.kt
+                    bahan = currentForm.bahan.map { com.example.resepappy.modeldata.Bahan(it.nama_bahan, it.takaran) }
                 )
                 val response = repository.tambahResep(request)
                 statusUi = if (response.isSuccessful) StatusUiResep.OperationSuccess
@@ -81,7 +83,8 @@ class ResepViewModel(
                     langkah = currentForm.langkah,
                     catatan = currentForm.catatan.ifBlank { null },
                     kategori = currentForm.kategori,
-                    bahan = emptyList()
+                     // Fix: Map DetailBahan to Bahan
+                    bahan = currentForm.bahan.map { com.example.resepappy.modeldata.Bahan(it.nama_bahan, it.takaran) }
                 )
                 val response = repository.updateResep(idResep, request)
                 statusUi = if (response.isSuccessful) StatusUiResep.OperationSuccess

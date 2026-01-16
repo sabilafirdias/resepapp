@@ -27,17 +27,33 @@ class HomeViewModel(private val repository: ResepRepository) : ViewModel() {
     var statusUi: StatusUiHome by mutableStateOf(StatusUiHome.Loading)
         private set
 
-    init {
-        loadByKategori()
-    }
+    // init block removed to control loading manually with userId
 
-    fun loadByKategori() {
+    fun loadByKategori(idUser: Int? = null) {
         viewModelScope.launch {
             statusUi = StatusUiHome.Loading
             try {
-                val response = repository.getAllResep()
-                if (response.isSuccessful) {
-                    val dataApi = response.body()?.map { it.toResep() } ?: emptyList()
+                // Fetch All Recipes
+                val responseResep = repository.getAllResep()
+                
+                // Fetch User Bookmarks if user is logged in
+                val bookmarkIds = if (idUser != null) {
+                    val responseBookmarks = repository.getBookmarks(idUser)
+                    if (responseBookmarks.isSuccessful) {
+                        responseBookmarks.body()?.map { it.id_resep }?.toSet() ?: emptySet()
+                    } else {
+                        emptySet()
+                    }
+                } else {
+                    emptySet()
+                }
+
+                if (responseResep.isSuccessful) {
+                    val dataApi = responseResep.body()?.map { response ->
+                        val resep = response.toResep()
+                        // Override is_bookmarked based on local merge
+                        resep.copy(is_bookmarked = bookmarkIds.contains(resep.id_resep))
+                    } ?: emptyList()
 
                     statusUi = StatusUiHome.Success(
                         allResep = dataApi,

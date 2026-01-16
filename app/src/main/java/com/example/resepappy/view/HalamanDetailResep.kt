@@ -30,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +48,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.resepappy.modeldata.Resep
+import com.example.resepappy.uicontroller.route.DestinasiDetailResep
+import com.example.resepappy.uicontroller.route.DestinasiEditResep
 import com.example.resepappy.viewmodel.DetailResepViewModel
 import com.example.resepappy.viewmodel.DetailUiState
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
@@ -57,10 +61,12 @@ fun HalamanDetailResep(
     idResep: Int,
     idUserLogin: Int,
     navController: NavController,
+    onNavigateBack: () -> Unit,
     onEditClick: (Int) -> Unit,
     viewModel: DetailResepViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     LaunchedEffect(idResep) {
         viewModel.getDetailResep(idResep)
@@ -97,12 +103,10 @@ fun HalamanDetailResep(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detail Resep") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
-                    }
-                }
+                title = stringResource(DestinasiDetailResep.titleRes),
+                canNavigateBack = true,
+                scrollBehavior = scrollBehavior,
+                navigateUp = onNavigateBack
             )
         },
         floatingActionButton = {
@@ -166,13 +170,44 @@ fun DetailContent(
         }
 
         item {
+            val langkahList = resep.langkah
+                .split("|", "\n")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+
             Text(text = "Langkah Memasak", style = MaterialTheme.typography.titleLarge)
-            Text(text = resep.langkah)
+
+            if (langkahList.isEmpty()) {
+                Text(text = resep.langkah, style = MaterialTheme.typography.bodyLarge)
+            } else {
+                langkahList.forEachIndexed { index, langkah ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "${index + 1}.",
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.width(28.dp)
+                        )
+                        Text(
+                            text = langkah,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+            }
         }
 
         if (resep.catatan != null) {
             item {
-                Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF9C4))) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFFFF9C4)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
                     Column(Modifier.padding(12.dp)) {
                         Text("Catatan:", fontWeight = FontWeight.Bold)
                         Text(resep.catatan)

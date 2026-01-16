@@ -139,7 +139,8 @@ fun HostNavigasi(
             val idUser = backStackEntry.arguments?.getInt("idUser") ?: 1
             HalamanBuatResep(
                 idUser = idUser,
-                navController = navController
+                navController = navController,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
@@ -157,7 +158,8 @@ fun HostNavigasi(
                 navController = navController,
                 onEditClick = { id ->
                     navController.navigate("edit_resep/$id")
-                }
+                },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
@@ -171,7 +173,8 @@ fun HostNavigasi(
             HalamanEditResep(
                 idResep = idResep,
                 idUser = idUser,
-                navController = navController
+                navController = navController,
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }

@@ -92,7 +92,7 @@ fun HalamanProfil(
                     viewModel.viewModelScope.launch {
                         if (viewModel.deleteAccount(currentUserId)) {
                             sessionViewModel.clearSession()
-                            onLogout()
+                            // onLogout() removed to prevent navigation to Login
                             navController.navigate(DestinasiWelcome.route) {
                                 popUpTo(0) { inclusive = true }
                                 launchSingleTop = true

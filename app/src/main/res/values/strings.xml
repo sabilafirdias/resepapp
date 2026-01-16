@@ -14,6 +14,8 @@
     <string name="home_title">Resep</string>
     <string name="search_hint">Cari resep atau bahan…</string>
     <string name="btn_add_resep">Tambah Resep</string>
+    <string name="create_resep">Buat Resep Baru</string>
+    <string name="edit_resep">Edit Resep</string>
     <string name="profile_title">Profil Pengguna</string>
     <string name="bookmark_title">Bookmark Saya</string>
     <string name="back">Kembali</string>
