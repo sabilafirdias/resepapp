@@ -3,6 +3,7 @@ package com.example.resepappy.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -44,6 +45,7 @@ fun HalamanProfil(
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val currentUserId = sessionViewModel.currentUserId ?: idUserLogin
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(viewModel.errorMessage, viewModel.successMessage) {
         if (viewModel.errorMessage.isNotEmpty()) {
@@ -89,12 +91,12 @@ fun HalamanProfil(
             DeleteConfirmationDialog(
                 onConfirm = {
                     showDeleteDialog = false
-                    viewModel.viewModelScope.launch {
-                        if (viewModel.deleteAccount(currentUserId)) {
+                    scope.launch {
+                        val success = viewModel.deleteAccount(currentUserId)
+                        if (success) {
                             sessionViewModel.clearSession()
                             navController.navigate(DestinasiWelcome.route) {
                                 popUpTo(0) { inclusive = true }
-                                launchSingleTop = true
                             }
                         }
                     }
@@ -125,9 +127,9 @@ fun HalamanProfil(
                             sessionViewModel = sessionViewModel,
                             navController = navController,
                             onLogout = {
-                                viewModel.viewModelScope.launch {
-                                    sessionViewModel.clearSession()
-                                    onLogout()
+                                sessionViewModel.clearSession()
+                                navController.navigate(DestinasiWelcome.route) {
+                                    popUpTo(0) { inclusive = true }
                                 }
                             },
                             onDeleteAccount = { showDeleteDialog = true }
@@ -214,7 +216,6 @@ private fun ProfilContent(
                                 resep = resep,
                                 onClick = { navController.navigate("detail_resep/${resep.id_resep}") },
                                 onBookmark = { viewModel.toggleBookmark(profil.id_user, resep.id_resep) },
-                                onComment = { navController.navigate("komentar/${resep.id_resep}") }
                             )
                         }
                     }
@@ -287,21 +288,29 @@ fun ActionButtons(
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.pastelbrown))
         ) {
-            Text("Edit Profil")
+            Text("Edit Profil",
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold)
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(
+            OutlinedButton(
                 onClick = onLogout,
+                shape = RoundedCornerShape(50),
                 modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.pastelbrown))
-            ) { Text("Logout") }
+            ) { Text("Logout", color = colorResource(id = R.color.pastelbrown),
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold
+                )
+            }
 
             Button(
                 onClick = onDeleteAccount,
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.merah))
-            ) { Text("Hapus Akun") }
+            ) { Text("Hapus Akun",
+                fontFamily = FontFamily.Monospace,
+                fontWeight = FontWeight.Bold) }
         }
     }
 }

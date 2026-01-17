@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -24,6 +25,7 @@ import com.example.resepappy.uicontroller.route.DestinasiHome
 import com.example.resepappy.viewmodel.ResepViewModel
 import com.example.resepappy.viewmodel.StatusUiResep
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
+import com.example.resepappy.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,9 +73,13 @@ fun HalamanBuatResep(
                         coroutineScope.launch {
                             viewModel.createResep(idUser)
                         }
-                    }
+                    },
+                    containerColor = colorResource(id = R.color.cokmud),
+                    contentColor = colorResource(id = R.color.pastelbrown)
                 ) {
-                    Icon(Icons.Default.Check, contentDescription = "Simpan")
+                    Icon(Icons.Default.Check,
+                        contentDescription = "Simpan"
+                    )
                 }
             }
         }

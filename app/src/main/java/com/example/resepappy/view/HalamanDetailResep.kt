@@ -118,7 +118,11 @@ fun HalamanDetailResep(
         floatingActionButton = {
             val state = viewModel.uiState
             if (state is DetailUiState.Success && state.resep.id_user == idUserLogin) {
-                FloatingActionButton(onClick = { onEditClick(idResep) }) {
+                FloatingActionButton(
+                    onClick = { onEditClick(idResep) },
+                    containerColor = colorResource(id = R.color.cokmud),
+                    contentColor = colorResource(id = R.color.pastelbrown)
+                ) {
                     Icon(Icons.Default.Edit, contentDescription = "Edit Resep")
                 }
             }
@@ -165,7 +169,7 @@ fun DetailContent(
                     text = resep.judul,
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.ExtraBold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = colorResource(id = R.color.pastelbrown)
                 )
                 Text(
                     text = "Oleh: ${resep.username}",
@@ -175,7 +179,7 @@ fun DetailContent(
                 Spacer(Modifier.height(8.dp))
                 Surface(
                     shape = MaterialTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = colorResource(id = R.color.cokmud).copy(alpha = 0.3f),
                     modifier = Modifier.wrapContentSize()
                 ) {
                     Row(
@@ -187,7 +191,8 @@ fun DetailContent(
                         Text(
                             text = "$jumlahBookmark orang menyimpan ini",
                             style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.pastelbrown)
                         )
                     }
                 }
@@ -245,14 +250,15 @@ fun DetailContent(
                     Row(modifier = Modifier.padding(vertical = 8.dp)) {
                         Surface(
                             shape = CircleShape,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = colorResource(id = R.color.cokmud),
                             modifier = Modifier.size(28.dp)
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Text(
                                     text = "${index + 1}",
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                    style = MaterialTheme.typography.labelLarge
+                                    color = colorResource(id = R.color.pastelbrown),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
                         }
@@ -271,16 +277,15 @@ fun DetailContent(
             item {
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.tertiaryContainer
+                        containerColor = colorResource(id = R.color.cokmud).copy(alpha = 0.3f)
                     ),
-                    shape = MaterialTheme.shapes.medium
+                    shape = MaterialTheme.shapes.small
                 ) {
-                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.Top) {
-                        Icon(Icons.Default.Info, contentDescription = null)
+                    Row(Modifier.padding(10.dp), verticalAlignment = Alignment.Top) {
                         Spacer(Modifier.width(12.dp))
                         Column {
-                            Text("Tips/Catatan:", fontWeight = FontWeight.ExtraBold)
-                            Text(resep.catatan, style = MaterialTheme.typography.bodyMedium)
+                            Text("Catatan:", fontWeight = FontWeight.ExtraBold, color = colorResource(id = R.color.pastelbrown))
+                            Text(resep.catatan, style = MaterialTheme.typography.bodyMedium, color = colorResource(id = R.color.pastelbrown))
                         }
                     }
                 }
@@ -292,9 +297,13 @@ fun DetailContent(
                 Button(
                     onClick = onCommentClick,
                     modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.medium
+                    shape = MaterialTheme.shapes.medium,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.cokmud),
+                        contentColor = colorResource(id = R.color.pastelbrown)
+                    )
                 ) {
-                    Text("Lihat Komentar")
+                    Text("Lihat Komentar", fontWeight = FontWeight.Bold)
                 }
 
                 if (resep.id_user == idUserLogin) {

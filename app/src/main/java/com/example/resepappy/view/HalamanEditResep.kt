@@ -14,11 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.resepappy.modeldata.Bahan
+import com.example.resepappy.R
 import com.example.resepappy.uicontroller.route.DestinasiEditResep
 import com.example.resepappy.viewmodel.EditResepViewModel
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
@@ -168,7 +170,11 @@ fun HalamanEditResep(
                                         namaBahanBaru = ""; takaranBaru = ""
                                     },
                                     enabled = namaBahanBaru.isNotBlank() && takaranBaru.isNotBlank(),
-                                    modifier = Modifier.align(Alignment.End)
+                                    modifier = Modifier.align(Alignment.End),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = colorResource(id = R.color.cokmud),
+                                        contentColor = colorResource(id = R.color.pastelbrown)
+                                    )
                                 ) { Text("Tambah") }
                             }
                         }
@@ -214,14 +220,18 @@ fun HalamanEditResep(
                                 value = stepBaru,
                                 onValueChange = { stepBaru = it },
                                 label = { Text("Deskripsi Langkah Baru") },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
                             )
                             Button(
                                 onClick = {
                                     viewModel.langkah = if (viewModel.langkah.isEmpty()) stepBaru else "${viewModel.langkah}\n$stepBaru"
                                     stepBaru = ""
                                 },
-                                enabled = stepBaru.isNotBlank()
+                                enabled = stepBaru.isNotBlank(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = colorResource(id = R.color.cokmud),
+                                    contentColor = colorResource(id = R.color.pastelbrown)
+                                )
                             ) { Text("Tambah") }
                         }
                     }
@@ -272,7 +282,11 @@ fun HalamanEditResep(
                         Button(
                             onClick = { viewModel.updateResep(idResep, idUser) },
                             modifier = Modifier.weight(1f),
-                            enabled = !viewModel.isLoading && viewModel.judul.isNotBlank() && viewModel.bahanList.isNotEmpty()
+                            enabled = !viewModel.isLoading && viewModel.judul.isNotBlank() && viewModel.bahanList.isNotEmpty(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = colorResource(id = R.color.cokmud),
+                                contentColor = colorResource(id = R.color.pastelbrown)
+                            )
                         ) {
                             if (viewModel.isLoading) CircularProgressIndicator(modifier = Modifier.size(20.dp), color = Color.White)
                             else Text("Simpan")

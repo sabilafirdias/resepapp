@@ -1,11 +1,13 @@
 package com.example.resepappy.view
 
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Star
@@ -13,12 +15,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.resepappy.R
 import com.example.resepappy.modeldata.Resep
 import com.example.resepappy.uicontroller.route.DestinasiCari
 import com.example.resepappy.viewmodel.HomeViewModel
@@ -40,11 +45,12 @@ fun HalamanHome(
     val uiState = viewModel.statusUi
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(idUserLogin) {
         viewModel.loadByKategori(idUserLogin)
     }
 
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             val currentCategory = if (uiState is StatusUiHome.Success) uiState.selectedCategory else "Semua"
 
@@ -64,7 +70,8 @@ fun HalamanHome(
                 onNavigateToDashboard = { navController.navigate(DestinasiHome.route) },
                 onNavigateToCari = { navController.navigate(DestinasiCari.route) },
                 onNavigateToBuatResep = {
-                    navController.navigate("buat_resep/$idUserLogin")},
+                    navController.navigate("buat_resep/$idUserLogin")
+                },
                 onNavigateToProfil = {
                     val currentUserId = sessionViewModel.currentUserId
                     if (currentUserId != null) {
@@ -76,27 +83,30 @@ fun HalamanHome(
             )
         }
     ) { innerPadding ->
-        when (val state = uiState) {
-            is StatusUiHome.Loading -> LoadingScreen()
-            is StatusUiHome.Error -> ErrorScreen(retryAction = { viewModel.loadByKategori(idUserLogin) })
-            is StatusUiHome.Success -> {
-                val listDitampilkan = when (state.selectedCategory) {
-                    "Makanan Berat" -> state.makananBerat
-                    "Cemilan" -> state.cemilan
-                    "Minuman" -> state.minuman
-                    else -> state.allResep
-                }
+        Box(modifier = Modifier.padding(innerPadding)) {
+            when (val state = uiState) {
+                is StatusUiHome.Loading -> LoadingScreen()
+                is StatusUiHome.Error -> ErrorScreen(retryAction = { viewModel.loadByKategori(idUserLogin) })
+                is StatusUiHome.Success -> {
+                    val listDitampilkan = remember(state) {
+                        when (state.selectedCategory) {
+                            "Makanan Berat" -> state.makananBerat
+                            "Cemilan" -> state.cemilan
+                            "Minuman" -> state.minuman
+                            else -> state.allResep
+                        }
+                    }
 
-                HomeContent(
-                    resepList = listDitampilkan,
-                    idUserLogin = idUserLogin,
-                    viewModel = viewModel,
-                    navController = navController,
-                    onResepClick = { idResep ->
-                        navController.navigate("detail_resep/$idResep")
-                    },
-                    modifier = Modifier.padding(innerPadding)
-                )
+                    HomeContent(
+                        resepList = listDitampilkan,
+                        idUserLogin = idUserLogin,
+                        viewModel = viewModel,
+                        navController = navController,
+                        onResepClick = { idResep ->
+                            navController.navigate("detail_resep/$idResep")
+                        }
+                    )
+                }
             }
         }
     }
@@ -113,9 +123,8 @@ fun TopBarWithDropdown(
     navigateUp: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedCategory by remember { mutableStateOf("Semua") }
 
-    TopAppBar(
+    CenterAlignedTopAppBar(
         title = {
             Box {
                 Row(
@@ -127,12 +136,10 @@ fun TopBarWithDropdown(
                 ) {
                     Text(
                         text = "$title: $currentSelected",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "Pilih kategori"
-                    )
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = null)
                 }
 
                 DropdownMenu(
@@ -140,34 +147,134 @@ fun TopBarWithDropdown(
                     onDismissRequest = { expanded = false }
                 ) {
                     categories.forEach { category ->
-                        val isSelected = (category == currentSelected)
                         DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = category,
-                                    fontWeight = if (category == currentSelected) FontWeight.Bold else FontWeight.Normal
-                                )
-                            },
+                            text = { Text(category) },
                             onClick = {
                                 onCategorySelected(category)
                                 expanded = false
                             },
-                            leadingIcon = if (isSelected) {
-                                {
-                                    Icon(
-                                        imageVector = Icons.Default.Check,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                }
+                            trailingIcon = if (category == currentSelected) {
+                                { Icon(Icons.Default.Check, contentDescription = null) }
                             } else null
                         )
                     }
                 }
             }
         },
+        navigationIcon = {
+            IconButton(onClick = navigateUp) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            }
+        },
         scrollBehavior = scrollBehavior
     )
+}
+
+@Composable
+fun HomeContent(
+    resepList: List<Resep>,
+    idUserLogin: Int,
+    viewModel: HomeViewModel,
+    navController: NavController,
+    onResepClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        if (resepList.isEmpty()) {
+            item {
+                Text(
+                    text = "Belum ada resep tersedia",
+                    modifier = Modifier.fillMaxWidth().padding(32.dp),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
+        } else {
+            items(
+                items = resepList,
+                key = { it.id_resep },
+                contentType = { "resep_card" } // Optimasi Recycle Memori
+            ) { resep ->
+                KomponenResep(
+                    resep = resep,
+                    onClick = { onResepClick(resep.id_resep) },
+                    onBookmark = { viewModel.toggleBookmark(idUserLogin, resep.id_resep) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun KomponenResep(
+    resep: Resep,
+    onClick: () -> Unit,
+    onBookmark: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val bahanDisplay = remember(resep.bahan) {
+        if (resep.bahan.isEmpty()) ""
+        else resep.bahan.take(2).joinToString("\n") { "• ${it.nama_bahan} (${it.takaran})" }
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = resep.judul,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.ExtraBold
+            )
+
+            Text(
+                text = "Oleh: ${resep.username}",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            if (bahanDisplay.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Column(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+                        Text(text = "Bahan utama:", style = MaterialTheme.typography.labelSmall)
+                        Text(text = bahanDisplay, style = MaterialTheme.typography.bodySmall)
+                        if (resep.bahan.size > 2) {
+                            Text(
+                                text = "+ ${resep.bahan.size - 2} bahan lainnya",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(onClick = onBookmark) {
+                    Icon(
+                        imageVector = if (resep.is_bookmarked) Icons.Filled.Star else Icons.Filled.Star,
+                        contentDescription = "Bookmark",
+                        tint = if (resep.is_bookmarked) colorResource(R.color.pastelbrown) else MaterialTheme.colorScheme.outline
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -194,137 +301,6 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = retryAction) {
             Text("Coba Lagi")
-        }
-    }
-}
-
-@Composable
-fun HomeContent(
-    resepList: List<Resep>,
-    idUserLogin: Int,
-    viewModel: HomeViewModel,
-    navController: NavController,
-    onResepClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-        contentPadding = PaddingValues(bottom = 16.dp)
-    ) {
-        if (resepList.isEmpty()) {
-            item {
-                Text(
-                    text = "Belum ada resep tersedia",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center
-                )
-            }
-        } else {
-            items(
-                items = resepList,
-                key = { it.id_resep }
-            ) { resep ->
-                KomponenResep(
-                    resep = resep,
-                    onClick = { onResepClick(resep.id_resep) },
-                    onBookmark = {
-                        viewModel.toggleBookmark(idUserLogin, resep.id_resep)
-                    },
-                    onComment = {
-                        navController.navigate("komentar/${resep.id_resep}")
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun KomponenResep(
-    resep: Resep,
-    onClick: () -> Unit,
-    onBookmark: () -> Unit,
-    onComment: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .clickable { onClick() },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = resep.judul,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Oleh: ${resep.username}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            if (resep.bahan.isNotEmpty()) {
-                Surface(
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp)
-                    ) {
-                        Text(
-                            text = "Bahan:",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-
-                        resep.bahan.take(2).forEach { bahan ->
-                            Text(
-                                text = "• ${bahan.nama_bahan} ${bahan.takaran}",
-                                style = MaterialTheme.typography.bodySmall,
-                                modifier = Modifier.padding(vertical = 2.dp)
-                            )
-                        }
-                        if (resep.bahan.size > 2) {
-                            Text(
-                                text = "... dan ${resep.bahan.size - 2} bahan lainnya",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBookmark) {
-                    Icon(
-                        imageVector = if (resep.is_bookmarked) Icons.Filled.Check else Icons.Filled.Star,
-                        contentDescription = "Bookmark"
-                    )
-                }
-            }
         }
     }
 }
