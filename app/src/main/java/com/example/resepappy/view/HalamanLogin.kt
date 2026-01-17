@@ -58,8 +58,8 @@ fun HalamanLogin(
             loginError = viewModel.loginError,
             onUserValueChange = { detailUser ->
                 if (detailUser.email != viewModel.uiStateUser.detailUser.email) {
-                    viewModel.updateEmail(detailUser.email)
-                }
+                viewModel.updateEmail(detailUser.email)
+            }
                 if (detailUser.password != viewModel.uiStateUser.detailUser.password) {
                     viewModel.updatePassword(detailUser.password)
                 }

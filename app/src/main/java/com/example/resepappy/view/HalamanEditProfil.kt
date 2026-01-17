@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -21,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -119,6 +122,12 @@ fun validatePassword(password: String): String? {
 @Composable
 fun EditProfilForm(viewModel: ProfilViewModel) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Text(
+            text = "Informasi Profil",
+            style = MaterialTheme.typography.headlineSmall,
+            color = colorResource(id = R.color.pastelbrown)
+        )
+
         OutlinedTextField(
             value = viewModel.editUsername,
             onValueChange = { viewModel.editUsername = it },
@@ -133,13 +142,28 @@ fun EditProfilForm(viewModel: ProfilViewModel) {
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+        HorizontalDivider(thickness = 1.dp, color = Color.LightGray)
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "Ubah Password",
+            style = MaterialTheme.typography.headlineSmall,
+            color = colorResource(id = R.color.pastelbrown)
+        )
+        Text(
+            text = "Kosongkan jika tidak ingin mengganti password",
+            style = MaterialTheme.typography.bodySmall,
+            color = Color.Gray
+        )
+
         val passwordMismatch = viewModel.newPassword.isNotEmpty() &&
                 viewModel.newPassword != viewModel.confirmPassword
 
         OutlinedTextField(
             value = viewModel.oldPassword,
             onValueChange = { viewModel.oldPassword = it },
-            label = { Text("Password Lama (opsional)") },
+            label = { Text("Password Lama") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
@@ -147,7 +171,7 @@ fun EditProfilForm(viewModel: ProfilViewModel) {
         OutlinedTextField(
             value = viewModel.newPassword,
             onValueChange = { viewModel.newPassword = it },
-            label = { Text("Password Baru (opsional)") },
+            label = { Text("Password Baru") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )

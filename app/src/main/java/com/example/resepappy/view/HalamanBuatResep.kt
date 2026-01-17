@@ -209,7 +209,11 @@ fun FormBuatResepLengkap(
                     }
                 },
                 enabled = namaBahanBaru.isNotBlank() && takaranBaru.isNotBlank(),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.cokmud),
+                    contentColor = colorResource(id = R.color.pastelbrown)
+                )
             ) {
                 Text("Tambah Bahan")
             }
@@ -247,7 +251,11 @@ fun FormBuatResepLengkap(
                         stepBaru = ""
                     },
                     enabled = stepBaru.isNotBlank(),
-                    modifier = Modifier.align(Alignment.End)
+                    modifier = Modifier.align(Alignment.End),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.cokmud),
+                        contentColor = colorResource(id = R.color.pastelbrown)
+                    )
                 ) { Text("Tambah Step") }
             }
         }

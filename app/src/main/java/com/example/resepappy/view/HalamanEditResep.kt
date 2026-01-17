@@ -256,7 +256,7 @@ fun HalamanEditResep(
                                     OutlinedTextField(
                                         value = viewModel.catatan,
                                         onValueChange = { viewModel.catatan = it },
-                                        placeholder = { Text("Tambahkan tips...") },
+                                        placeholder = { Text("Tambahkan catatan...") },
                                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
                                     )
                                 } else {
