@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.resepappy.modeldata.DetailResep
 import com.example.resepappy.modeldata.Resep
 import com.example.resepappy.modeldata.ResepRequest
-import com.example.resepappy.modeldata.toResep // Pastikan ini terimpor
+import com.example.resepappy.modeldata.toResep
 import com.example.resepappy.modeldata.UIStateResep
 import com.example.resepappy.repositori.ResepRepository
 import kotlinx.coroutines.launch
@@ -42,7 +42,7 @@ class ResepViewModel(
         val isValid = detailResep.judul.isNotBlank() &&
                 detailResep.langkah.isNotBlank() &&
                 detailResep.kategori.isNotBlank() &&
-                detailResep.bahan.isNotEmpty() // Validasi: Bahan tidak boleh kosong
+                detailResep.bahan.isNotEmpty()
 
         uiStateResep = UIStateResep(detailResep, isValid)
         statusUi = StatusUiResep.FormInput(uiStateResep)
@@ -59,7 +59,6 @@ class ResepViewModel(
                     langkah = currentForm.langkah,
                     catatan = currentForm.catatan.ifBlank { null },
                     kategori = currentForm.kategori,
-                    // Fix: Map DetailBahan to Bahan using the extension function from Bahan.kt
                     bahan = currentForm.bahan.map { com.example.resepappy.modeldata.Bahan(it.nama_bahan, it.takaran) }
                 )
                 val response = repository.tambahResep(request)
@@ -83,7 +82,6 @@ class ResepViewModel(
                     langkah = currentForm.langkah,
                     catatan = currentForm.catatan.ifBlank { null },
                     kategori = currentForm.kategori,
-                     // Fix: Map DetailBahan to Bahan
                     bahan = currentForm.bahan.map { com.example.resepappy.modeldata.Bahan(it.nama_bahan, it.takaran) }
                 )
                 val response = repository.updateResep(idResep, request)
@@ -105,7 +103,6 @@ class ResepViewModel(
             try {
                 val response = repository.searchResep(keyword)
                 if (response.isSuccessful) {
-                    // Perbaikan: Mapping data dan masukkan ke ResepLoaded
                     val listResep = response.body()?.map { it.toResep() } ?: emptyList()
                     statusUi = StatusUiResep.ResepLoaded(listResep)
                 } else {
@@ -121,7 +118,6 @@ class ResepViewModel(
         viewModelScope.launch {
             statusUi = StatusUiResep.DataLoading
             try {
-                // Perbaikan: Tambahkan pemanggilan repository
                 val response = repository.getResepDetail(id)
                 if (response.isSuccessful) {
                     val resep = response.body()?.toResep()

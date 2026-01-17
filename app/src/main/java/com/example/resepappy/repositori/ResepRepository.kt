@@ -1,7 +1,18 @@
 package com.example.resepappy.repositori
 
 import com.example.resepappy.apiService.ApiService
-import com.example.resepappy.modeldata.*
+import com.example.resepappy.modeldata.Bookmark
+import com.example.resepappy.modeldata.EditProfilRequest
+import com.example.resepappy.modeldata.Komentar
+import com.example.resepappy.modeldata.LoginRequest
+import com.example.resepappy.modeldata.LoginResponse
+import com.example.resepappy.modeldata.OperationResponse
+import com.example.resepappy.modeldata.RegisterRequest
+import com.example.resepappy.modeldata.Resep
+import com.example.resepappy.modeldata.ResepRequest
+import com.example.resepappy.modeldata.ResepResponse
+import com.example.resepappy.modeldata.UniqueCheckResponse
+import com.example.resepappy.modeldata.User
 import retrofit2.Response
 
 interface ResepRepository {
@@ -56,6 +67,7 @@ class JaringanResepRepository(
 
     override suspend fun deleteAkun(idUser: Int): Response<OperationResponse> =
         apiService.deleteAkun(idUser)
+
 
     override suspend fun getAllResep(): Response<List<ResepResponse>> =
         apiService.getAllResep()

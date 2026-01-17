@@ -1,6 +1,5 @@
 package com.example.resepappy.view
 
-import android.R
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.resepappy.modeldata.Bahan
-import com.example.resepappy.modeldata.DetailBahan
 import com.example.resepappy.uicontroller.route.DestinasiEditResep
 import com.example.resepappy.viewmodel.EditResepViewModel
 import com.example.resepappy.viewmodel.provider.PenyediaViewModel
@@ -80,7 +78,6 @@ fun HalamanEditResep(
                         .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // --- Judul & Kategori tetap sama ---
                     item {
                         OutlinedTextField(
                             value = viewModel.judul,
@@ -117,7 +114,6 @@ fun HalamanEditResep(
                         }
                     }
 
-                    // --- EDIT BAHAN (Inline Editing) ---
                     item { Text("Bahan-Bahan", style = MaterialTheme.typography.titleMedium) }
 
                     itemsIndexed(viewModel.bahanList) { index, bahan ->
@@ -148,7 +144,6 @@ fun HalamanEditResep(
                         }
                     }
 
-                    // Input Bahan Baru
                     item {
                         Card(
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
@@ -179,7 +174,6 @@ fun HalamanEditResep(
                         }
                     }
 
-                    // --- EDIT LANGKAH (Inline Editing) ---
                     item { Text("Langkah Pembuatan", style = MaterialTheme.typography.titleMedium) }
 
                     val langkahList = if (viewModel.langkah.isBlank()) emptyList() else viewModel.langkah.split("\n")
@@ -210,7 +204,6 @@ fun HalamanEditResep(
                         }
                     }
 
-                    // Input Langkah Baru
                     item {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -233,7 +226,6 @@ fun HalamanEditResep(
                         }
                     }
 
-                    // --- Bagian Catatan tetap sama ---
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -271,7 +263,6 @@ fun HalamanEditResep(
                     item { Spacer(modifier = Modifier.height(16.dp)) }
                 }
 
-                // Tombol Simpan/Batal tetap sama
                 Column(modifier = Modifier.padding(16.dp)) {
                     if (viewModel.errorMessage != null) {
                         Text(viewModel.errorMessage!!, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(bottom = 8.dp))

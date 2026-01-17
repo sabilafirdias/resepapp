@@ -92,7 +92,6 @@ fun HalamanProfil(
                     viewModel.viewModelScope.launch {
                         if (viewModel.deleteAccount(currentUserId)) {
                             sessionViewModel.clearSession()
-                            // onLogout() removed to prevent navigation to Login
                             navController.navigate(DestinasiWelcome.route) {
                                 popUpTo(0) { inclusive = true }
                                 launchSingleTop = true
@@ -170,7 +169,6 @@ private fun ProfilContent(
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // Sticky TabRow di bagian atas
         TabRow(selectedTabIndex = selectedTab) {
             Tab(
                 selected = selectedTab == 0,
@@ -189,14 +187,13 @@ private fun ProfilContent(
             )
         }
 
-        // Konten yang berubah sesuai Tab
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(16.dp)
         ) {
             when (selectedTab) {
-                0 -> { // TAB RESEP SAYA
+                0 -> { // resep saya
                     if (viewModel.listResepUser.isEmpty()) {
                         item { EmptyState("Belum ada resep yang dibuat.") }
                     } else {
@@ -208,7 +205,7 @@ private fun ProfilContent(
                     }
                 }
 
-                1 -> { // TAB BOOKMARK
+                1 -> { // bookmark
                     if (viewModel.listBookmarkUser.isEmpty()) {
                         item { EmptyState("Belum ada resep yang disimpan.") }
                     } else {
@@ -223,14 +220,14 @@ private fun ProfilContent(
                     }
                 }
 
-                2 -> { // TAB PENGATURAN AKUN
+                2 -> { // akun
                     item {
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                    ProfilInfo(profil = profil)
+                                ProfilInfo(profil = profil)
                             }
                         }
                     }
@@ -247,8 +244,6 @@ private fun ProfilContent(
                     }
                 }
             }
-
-            // Spacer bawah agar tidak tertutup BottomNav
             item { Spacer(modifier = Modifier.height(80.dp)) }
         }
     }

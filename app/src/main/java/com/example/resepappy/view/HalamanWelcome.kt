@@ -1,9 +1,7 @@
 package com.example.resepappy.view
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -19,13 +17,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.example.resepappy.R
-import com.example.resepappy.uicontroller.route.DestinasiLogin
-import com.example.resepappy.uicontroller.route.DestinasiRegister
 import com.example.resepappy.viewmodel.WelcomeUiState
 import com.example.resepappy.viewmodel.WelcomeViewModel
-import com.example.resepappy.viewmodel.provider.PenyediaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

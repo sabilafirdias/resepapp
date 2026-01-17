@@ -53,7 +53,6 @@ fun HalamanKomentar(
             )
         },
         bottomBar = {
-            // Input Komentar yang menempel di bawah
             Surface(
                 tonalElevation = 8.dp,
                 shadowElevation = 8.dp
@@ -62,8 +61,8 @@ fun HalamanKomentar(
                     modifier = Modifier
                         .padding(12.dp)
                         .fillMaxWidth()
-                        .navigationBarsPadding() // Agar tidak tertutup navigasi sistem
-                        .imePadding(), // Agar naik saat keyboard muncul
+                        .navigationBarsPadding()
+                        .imePadding(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     OutlinedTextField(
@@ -78,7 +77,7 @@ fun HalamanKomentar(
                     FilledIconButton(
                         onClick = {
                             viewModel.kirimKomentar(idResep, idUserLogin, teksKomentar) {
-                                teksKomentar = "" // Reset teks setelah terkirim
+                                teksKomentar = ""
                             }
                         },
                         enabled = teksKomentar.isNotBlank(),
@@ -117,7 +116,6 @@ fun HalamanKomentar(
 @Composable
 fun ItemKomentar(komentar: Komentar) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        // Avatar Inisial Sederhana
         Surface(
             shape = CircleShape,
             color = MaterialTheme.colorScheme.secondaryContainer,
@@ -147,7 +145,7 @@ fun ItemKomentar(komentar: Komentar) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = komentar.created_at, // Bisa diformat jika perlu
+                    text = komentar.created_at,
                     fontSize = 10.sp,
                     color = Color.Gray
                 )

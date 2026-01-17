@@ -3,11 +3,8 @@ package com.example.resepappy.view
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -21,10 +18,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.resepappy.R
 import com.example.resepappy.modeldata.DetailBahan
 import com.example.resepappy.uicontroller.route.DestinasiBuatResep
-import com.example.resepappy.uicontroller.route.DestinasiEditResep
 import com.example.resepappy.uicontroller.route.DestinasiHome
 import com.example.resepappy.viewmodel.ResepViewModel
 import com.example.resepappy.viewmodel.StatusUiResep

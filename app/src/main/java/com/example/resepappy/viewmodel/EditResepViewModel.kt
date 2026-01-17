@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.resepappy.modeldata.Bahan // Pastikan model data konsisten
+import com.example.resepappy.modeldata.Bahan
 import com.example.resepappy.modeldata.ResepRequest
 import com.example.resepappy.modeldata.toResep
 import com.example.resepappy.repositori.ResepRepository
@@ -19,7 +19,6 @@ class EditResepViewModel(private val repository: ResepRepository) : ViewModel() 
     var langkah by mutableStateOf("")
     var catatan by mutableStateOf("")
 
-    // Gunakan SnapshotStateList agar UI otomatis update saat add/remove
     val bahanList = mutableStateListOf<Bahan>()
 
     var isLoading by mutableStateOf(false)
@@ -27,7 +26,6 @@ class EditResepViewModel(private val repository: ResepRepository) : ViewModel() 
     var isUpdateSuccess by mutableStateOf(false)
 
     fun loadResepData(idResep: Int) {
-        // Hanya load jika data masih kosong untuk mencegah reset saat rotasi layar
         if (judul.isNotEmpty()) return
 
         viewModelScope.launch {
@@ -41,8 +39,6 @@ class EditResepViewModel(private val repository: ResepRepository) : ViewModel() 
                         kategori = it.kategori
                         langkah = it.langkah
                         catatan = it.catatan ?: ""
-
-                        // Cara benar mengisi SnapshotStateList
                         bahanList.clear()
                         bahanList.addAll(it.bahan)
                     }

@@ -27,16 +27,11 @@ class HomeViewModel(private val repository: ResepRepository) : ViewModel() {
     var statusUi: StatusUiHome by mutableStateOf(StatusUiHome.Loading)
         private set
 
-    // init block removed to control loading manually with userId
-
     fun loadByKategori(idUser: Int? = null) {
         viewModelScope.launch {
             statusUi = StatusUiHome.Loading
             try {
-                // Fetch All Recipes
                 val responseResep = repository.getAllResep()
-                
-                // Fetch User Bookmarks if user is logged in
                 val bookmarkIds = if (idUser != null) {
                     val responseBookmarks = repository.getBookmarks(idUser)
                     if (responseBookmarks.isSuccessful) {
@@ -51,7 +46,6 @@ class HomeViewModel(private val repository: ResepRepository) : ViewModel() {
                 if (responseResep.isSuccessful) {
                     val dataApi = responseResep.body()?.map { response ->
                         val resep = response.toResep()
-                        // Override is_bookmarked based on local merge
                         resep.copy(is_bookmarked = bookmarkIds.contains(resep.id_resep))
                     } ?: emptyList()
 
@@ -74,7 +68,6 @@ class HomeViewModel(private val repository: ResepRepository) : ViewModel() {
     fun filterByCategory(category: String) {
         val current = statusUi
         if (current is StatusUiHome.Success) {
-            // Cukup update label kategori, UI akan otomatis hitung ulang list-nya
             statusUi = current.copy(selectedCategory = category)
         }
     }

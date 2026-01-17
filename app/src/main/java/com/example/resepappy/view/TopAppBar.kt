@@ -16,10 +16,10 @@ import com.example.resepappy.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar(title: String,
-                   modifier: Modifier = Modifier,
-                   canNavigateBack: Boolean = false,
-                   scrollBehavior: TopAppBarScrollBehavior? = null,
-                   navigateUp: () -> Unit = {}
+              modifier: Modifier = Modifier,
+              canNavigateBack: Boolean = false,
+              scrollBehavior: TopAppBarScrollBehavior? = null,
+              navigateUp: () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(title = { Text(title) },
         modifier = modifier,

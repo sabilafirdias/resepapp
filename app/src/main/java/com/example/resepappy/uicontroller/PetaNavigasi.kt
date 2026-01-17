@@ -179,7 +179,6 @@ fun HostNavigasi(
             )
         }
 
-        // Di dalam NavHost Anda
         composable(
             route = DestinasiKomentar.routeWithArgs,
             arguments = listOf(navArgument(DestinasiKomentar.resepIdArg) { type = NavType.IntType })

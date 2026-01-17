@@ -44,7 +44,6 @@ class AuthViewModel(
 
     fun updateConfirmPassword(value: String) {
         confirmPassword = value
-        // Validasi apakah cocok dengan password utama
         val error = if (value != uiStateUser.detailUser.password) {
             "Password tidak cocok"
         } else null
@@ -103,10 +102,8 @@ class AuthViewModel(
                     usernameError = "Username '$username' sudah dipakai. Coba yang lain!"
                 )
             } else {
-                // Jika tidak ada, hapus error
                 uiStateUser = uiStateUser.copy(usernameError = null)
             }
-
         } catch (e: Exception) {
             uiStateUser = uiStateUser.copy(
                 usernameError = "Tidak bisa memeriksa username. Cek koneksi internet Anda."
@@ -221,7 +218,6 @@ class AuthViewModel(
                 }
 
             } else {
-                // ⬇️ BACA ERROR JSON DARI SERVER
                 val errorJson = response.errorBody()?.string()
 
                 if (errorJson != null && errorJson.contains("error")) {

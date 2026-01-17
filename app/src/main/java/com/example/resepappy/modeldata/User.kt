@@ -46,19 +46,16 @@ data class EditProfilRequest(
     val id_user: Int,
     val username: String,
     val email: String,
-    val old_password: String? = null, // Hanya diisi jika ganti password
-    val new_password: String? = null  // Hanya diisi jika ganti password
+    val old_password: String? = null,
+    val new_password: String? = null
 )
 
-// Untuk form input UI
 data class DetailUser(
     val username: String = "",
     val email: String = "",
     val password: String = ""
-    // TIDAK ADA id_user! (belum ada saat input)
 )
 
-// State UI untuk form
 data class UIStateUser(
     val detailUser: DetailUser = DetailUser(),
     val usernameError: String? = null,
@@ -87,7 +84,6 @@ data class UIStateUser(
     }
 }
 
-// Konversi dari form ke request register
 fun DetailUser.toRegisterRequest() = RegisterRequest(
     username = username,
     email = email,

@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
@@ -195,7 +194,6 @@ fun DetailContent(
             }
         }
 
-        // --- Bagian Bahan ---
         item {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -228,7 +226,6 @@ fun DetailContent(
             }
         }
 
-        // --- Bagian Langkah ---
         item {
             Text(
                 text = "Langkah Memasak",
@@ -270,7 +267,6 @@ fun DetailContent(
             }
         }
 
-        // --- Bagian Catatan ---
         if (!resep.catatan.isNullOrBlank()) {
             item {
                 Card(
@@ -291,7 +287,6 @@ fun DetailContent(
             }
         }
 
-        // --- Tombol Aksi ---
         item {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Button(

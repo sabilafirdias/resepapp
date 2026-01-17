@@ -1,6 +1,17 @@
 package com.example.resepappy.apiService
 
-import com.example.resepappy.modeldata.*
+import com.example.resepappy.modeldata.Bookmark
+import com.example.resepappy.modeldata.EditProfilRequest
+import com.example.resepappy.modeldata.Komentar
+import com.example.resepappy.modeldata.LoginRequest
+import com.example.resepappy.modeldata.LoginResponse
+import com.example.resepappy.modeldata.OperationResponse
+import com.example.resepappy.modeldata.RegisterRequest
+import com.example.resepappy.modeldata.Resep
+import com.example.resepappy.modeldata.ResepRequest
+import com.example.resepappy.modeldata.ResepResponse
+import com.example.resepappy.modeldata.UniqueCheckResponse
+import com.example.resepappy.modeldata.User
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -40,7 +51,6 @@ interface ApiService {
     @GET("resep/get_resep.php")
     suspend fun getResepDetail(@Query("id_resep") id: Int): Response<ResepResponse>
 
-    // ApiService.kt
     @GET("resep/get_resep_by_user.php")
     suspend fun getResepByUser(@Query("id_user") idUser: Int): Response<List<Resep>>
 

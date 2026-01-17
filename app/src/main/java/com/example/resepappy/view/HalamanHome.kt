@@ -8,14 +8,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -87,7 +84,7 @@ fun HalamanHome(
                     "Makanan Berat" -> state.makananBerat
                     "Cemilan" -> state.cemilan
                     "Minuman" -> state.minuman
-                    else -> state.allResep // Untuk "Semua"
+                    else -> state.allResep
                 }
 
                 HomeContent(
@@ -126,7 +123,7 @@ fun TopBarWithDropdown(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
                         .clickable { expanded = true }
-                        .padding(8.dp) // Memberi sedikit ruang klik agar lebih nyaman
+                        .padding(8.dp)
                 ) {
                     Text(
                         text = "$title: $currentSelected",
@@ -155,7 +152,6 @@ fun TopBarWithDropdown(
                                 onCategorySelected(category)
                                 expanded = false
                             },
-                            // Memberi tanda jika kategori sedang dipilih
                             leadingIcon = if (isSelected) {
                                 {
                                     Icon(
@@ -296,7 +292,6 @@ fun KomponenResep(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
-                        // Tampilkan maksimal 3 bahan pertama
                         resep.bahan.take(2).forEach { bahan ->
                             Text(
                                 text = "• ${bahan.nama_bahan} ${bahan.takaran}",
@@ -304,8 +299,6 @@ fun KomponenResep(
                                 modifier = Modifier.padding(vertical = 2.dp)
                             )
                         }
-
-                        // Jika ada lebih dari 3 bahan, tampilkan "..."
                         if (resep.bahan.size > 2) {
                             Text(
                                 text = "... dan ${resep.bahan.size - 2} bahan lainnya",
@@ -320,7 +313,6 @@ fun KomponenResep(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Aksi (Bookmark & Komentar)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,

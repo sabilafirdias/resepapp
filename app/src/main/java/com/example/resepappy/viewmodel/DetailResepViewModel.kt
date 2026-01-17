@@ -49,14 +49,11 @@ class DetailResepViewModel(private val repository: ResepRepository) : ViewModel(
     private fun fetchJumlahBookmark(idResep: Int) {
         viewModelScope.launch {
             try {
-                // Menggunakan getCountBookmarks yang mengembalikan Response<Int>
                 val response = repository.getCountBookmarks(idResep)
                 if (response.isSuccessful) {
                     jumlahBookmark = response.body() ?: 0
                 }
-            } catch (e: Exception) {
-                // Opsional: Log error jika gagal ambil jumlah bookmark
-            }
+            } catch (e: Exception) { }
         }
     }
 

@@ -48,9 +48,8 @@ class CariResepViewModel(private val repository: ResepRepository) : ViewModel() 
                         }
                     }
                 }
-            } catch (e: Exception) {
-                // Handle Error
-            } finally {
+            } catch (e: Exception) { }
+            finally {
                 isSearching = false
             }
         }

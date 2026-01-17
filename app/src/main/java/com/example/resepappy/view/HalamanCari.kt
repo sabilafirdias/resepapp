@@ -33,7 +33,6 @@ fun HalamanCari(
         topBar = {
             TopAppBar(
                 title = {
-                    // Masukkan TextField di dalam judul agar seragam secara posisi
                     TextField(
                         value = viewModel.searchQuery,
                         onValueChange = { viewModel.onQueryChange(it) },
@@ -45,11 +44,9 @@ fun HalamanCari(
                             focusedIndicatorColor = Color.Transparent,
                             unfocusedIndicatorColor = Color.Transparent
                         ),
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                         singleLine = true
                     )
                 },
-                // Tambahkan tombol kembali (NavigateUp)
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
@@ -88,7 +85,6 @@ fun HalamanCari(
                                 Text(resep.judul, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                                 Text("Oleh: ${resep.username}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
                                 Spacer(Modifier.height(4.dp))
-                                // Ringkasan bahan (REQ-20)
                                 Text("Bahan: ${resep.langkah.take(50)}...", fontSize = 12.sp)
                             }
                         }

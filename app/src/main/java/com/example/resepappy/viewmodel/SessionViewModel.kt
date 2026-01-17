@@ -15,7 +15,6 @@ class SessionViewModel(application: Application) : AndroidViewModel(application)
         private set
 
     init {
-        // Load dari SharedPreferences saat app dibuka
         val savedId = prefs.getInt("user_id", -1)
         if (savedId != -1) {
             currentUserId = savedId

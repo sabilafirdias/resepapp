@@ -79,7 +79,7 @@ class ProfilViewModel(
     fun loadResepUser(idUser: Int) {
         viewModelScope.launch {
             try {
-                val response = repository.getResepByUserId(idUser) // Pastikan fungsi ini ada di repository
+                val response = repository.getResepByUserId(idUser)
                 if (response.isSuccessful) {
                     listResepUser = response.body() ?: emptyList()
                 }
@@ -92,11 +92,9 @@ class ProfilViewModel(
             try {
                 val response = repository.toggleBookmark(idUser, idResep)
                 if (response.isSuccessful) {
-                    // Refresh list bookmark setelah status berubah di server
                     loadBookmarkUser(idUser)
                 }
             } catch (e: Exception) {
-                // Biarkan kosong sesuai gaya codingan Anda
             }
         }
     }
